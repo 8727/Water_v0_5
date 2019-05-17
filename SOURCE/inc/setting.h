@@ -4,7 +4,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 #include "main.h"
-// #include "Ee24cxx.h"
+#include "Ee24cxx.h"
 // #include "rtc.h"
 // #include "ili9488.h"
 // #include "w25qxx.h"
@@ -110,15 +110,9 @@ struct settingsInitTypeDef{
   uint8_t rotation;
   uint16_t maxX;
   uint16_t maxY;
-  uint8_t ax;
-  uint8_t ay;
-  int16_t bx;
-  int16_t by;
+
   
-  
-  
-  uint8_t brightnessW[LEDS_W];
-  uint8_t effectRGB;
+ 
   
 };
 extern struct settingsInitTypeDef settings;

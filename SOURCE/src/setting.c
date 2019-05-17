@@ -47,35 +47,19 @@ uint32_t BufferToCounter(uint8_t* buff){
   return data;
 }
 
-void ReadSettingTimers(void){
-  uint8_t tempBuff[0x80];
-  uint8_t step = 0x00;
-  Ee24cxxRead(0x80, tempBuff, 0x7F);
-  for(uint8_t i = 0x00; i < 0x10; i++){
-    timesJob[i].jobActivity = tempBuff[step];
-    timesJob[i].typeChannel = tempBuff[step + 0x01];
-    timesJob[i].value = tempBuff[step + 0x02];
-    timesJob[i].wday = tempBuff[step + 0x03];
-    timesJob[i].hourOn = tempBuff[step + 0x04];
-    timesJob[i].minOn = tempBuff[step + 0x05];
-    timesJob[i].hourOff = tempBuff[step + 0x06];
-    timesJob[i].minOff = tempBuff[step + 0x07];
-    step += 0x08;
-  }
-}
 void ReadConfig(void){
   uint8_t tempReadBuff[0x30];
   uint8_t tempWriteBuff[0x08];
   Ee24cxxRead(0x00, tempReadBuff, 0x30);
   if(0xFF != tempReadBuff[EEPROM_STATUS]){
-    RtcTypeDef unixTime;
-    unixTime.year  = BUILD_YEAR;
-    unixTime.month = BUILD_MONTH;
-    unixTime.day   = BUILD_DAY;
-    unixTime.hour  = BUILD_TIME_H;
-    unixTime.min   = BUILD_TIME_M;
-    unixTime.sec   = BUILD_TIME_S;
-    CounterToBuffer(RtcTimeToCounter(&unixTime), tempWriteBuff);
+//    RtcTypeDef unixTime;
+//    unixTime.year  = BUILD_YEAR;
+//    unixTime.month = BUILD_MONTH;
+//    unixTime.day   = BUILD_DAY;
+//    unixTime.hour  = BUILD_TIME_H;
+//    unixTime.min   = BUILD_TIME_M;
+//    unixTime.sec   = BUILD_TIME_S;
+//    CounterToBuffer(RtcTimeToCounter(&unixTime), tempWriteBuff);
     Ee24cxxWritePage(EEPROM_BUILD_DATE, tempWriteBuff, 0x04);
     Ee24cxxWriteByte(EEPROM_STATUS, 0x00);
     Ee24cxxWriteByte(EEPROM_DEVICE_N, DEVICE_NUMBER);
@@ -122,32 +106,19 @@ void ReadConfig(void){
       settings.maxY = 0x01E0;
     break;
   }
-  settings.ax = 0x07;
-  settings.ay = 0x0A;
-  settings.bx = 0x0005;
-  settings.by = 0xFFBD;
 }
 
 void Setting(void){
   Ee24cxxInit();
   ReadConfig();
-  RtcInit();
-  LcdInit();
-  W25QxxInit();
-  GuiInit();
-  Xpt2046Init();
-  if(!(GPIOB->IDR & GPIO_IDR_IDR11)){
-    Xpt2046Calibration();
-  }else{
-    TIM2->CCR1 = 0x2F;
-  }
-  Rs485Init();
-  Dht22Init();
-  Ds18b20Init();
-  
-  Ws2811Init();
-  
-  ReadSettingTimers();
+//  RtcInit();
+//  LcdInit();
+//  W25QxxInit();
+//  GuiInit();
+//  Rs485Init();
+//  Dht22Init();
+//  Ds18b20Init();
+
   
 //  TIM2->CCR1 = 0x20;
 //  DelayMs(100);
