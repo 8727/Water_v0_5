@@ -21,6 +21,7 @@ void Start(void){
   
   RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
   
+//  AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE + AFIO_MAPR_TIM2_REMAP_FULLREMAP + AFIO_MAPR_TIM4_REMAP + AFIO_MAPR_I2C1_REMAP;
   AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE + AFIO_MAPR_TIM2_REMAP_FULLREMAP + AFIO_MAPR_TIM4_REMAP + AFIO_MAPR_I2C1_REMAP;
   
   RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
@@ -52,14 +53,14 @@ void ReadConfig(void){
   uint8_t tempWriteBuff[0x08];
   Ee24cxxRead(0x00, tempReadBuff, 0x30);
   if(0xFF != tempReadBuff[EEPROM_STATUS]){
-//    RtcTypeDef unixTime;
-//    unixTime.year  = BUILD_YEAR;
-//    unixTime.month = BUILD_MONTH;
-//    unixTime.day   = BUILD_DAY;
-//    unixTime.hour  = BUILD_TIME_H;
-//    unixTime.min   = BUILD_TIME_M;
-//    unixTime.sec   = BUILD_TIME_S;
-//    CounterToBuffer(RtcTimeToCounter(&unixTime), tempWriteBuff);
+    RtcTypeDef unixTime;
+    unixTime.year  = BUILD_YEAR;
+    unixTime.month = BUILD_MONTH;
+    unixTime.day   = BUILD_DAY;
+    unixTime.hour  = BUILD_TIME_H;
+    unixTime.min   = BUILD_TIME_M;
+    unixTime.sec   = BUILD_TIME_S;
+    CounterToBuffer(RtcTimeToCounter(&unixTime), tempWriteBuff);
     Ee24cxxWritePage(EEPROM_BUILD_DATE, tempWriteBuff, 0x04);
     Ee24cxxWriteByte(EEPROM_STATUS, 0x00);
     Ee24cxxWriteByte(EEPROM_DEVICE_N, DEVICE_NUMBER);
@@ -82,9 +83,9 @@ void ReadConfig(void){
   }
   settings.type = tempReadBuff[EEPROM_BUILD_TYPE];
   settings.number = tempReadBuff[EEPROM_DEVICE_N];
-  settings.date = BufferToCounter(tempReadBuff);
+  settings.dateBuild = BufferToCounter(tempReadBuff);
   settings.canDevice = 0x0000 + (settings.number << 0x04);
-  settings.calibration = tempReadBuff[EEPROM_CALIBRATION];
+  settings.rtcCalibration = tempReadBuff[EEPROM_CALIBRATION];
   settings.calibPowerV = tempReadBuff[EEPROM_CALIB_POWER_V];
   settings.canSpeed = (tempReadBuff[EEPROM_CAN_SPEED] << 0x18)| (tempReadBuff[EEPROM_CAN_SPEED + 0x01] << 0x10) |
                       (tempReadBuff[EEPROM_CAN_SPEED + 0x02] << 0x08)| (tempReadBuff[EEPROM_CAN_SPEED + 0x03]);
@@ -111,13 +112,13 @@ void ReadConfig(void){
 void Setting(void){
   Ee24cxxInit();
   ReadConfig();
-//  RtcInit();
-//  LcdInit();
-//  W25QxxInit();
-//  GuiInit();
+  RtcInit();
+  LcdInit();
+  W25QxxInit();
+  GuiInit();
 //  Rs485Init();
-//  Dht22Init();
-//  Ds18b20Init();
+  Dht22Init();
+  Ds18b20Init();
 
   
 //  TIM2->CCR1 = 0x20;

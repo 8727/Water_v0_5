@@ -5,16 +5,13 @@
 #include "stm32f10x.h"
 #include "main.h"
 #include "Ee24cxx.h"
-// #include "rtc.h"
-// #include "ili9488.h"
-// #include "w25qxx.h"
+#include "rtc.h"
+#include "ili9488.h"
+#include "w25qxx.h"
 // #include "xpt2046.h"
 // #include "rs485.h"
-// #include "dht22.h"
-// #include "ds18b20.h"
-// #include "ws2811.h"
-// #include "lighting.h"
-// #include "timers.h"
+#include "dht22.h"
+#include "ds18b20.h"
 
 
 /* Define --------------------------------------------------------------------*/
@@ -100,12 +97,13 @@
 struct settingsInitTypeDef{
   uint8_t  type;
   uint8_t  number;
-  uint32_t date;
+  uint32_t dateBuild;
   uint16_t canDevice;
-  uint8_t  calibration;
-  int8_t   calibPowerV;
+  uint8_t  rtcCalibration;
   uint32_t canSpeed;
   uint16_t rs485Speed;
+  int8_t   calibPowerV;
+
   // LCD
   uint8_t rotation;
   uint16_t maxX;
