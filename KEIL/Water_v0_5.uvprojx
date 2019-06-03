@@ -457,6 +457,16 @@
               <FileType>1</FileType>
               <FilePath>..\SOURCE\src\ds18b20.c</FilePath>
             </File>
+            <File>
+              <FileName>gidrolock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\gidrolock.c</FilePath>
+            </File>
+            <File>
+              <FileName>fan.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\fan.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
