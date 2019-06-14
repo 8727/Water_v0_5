@@ -55,8 +55,8 @@ void RtcSetCounter(uint32_t counter){
 
 void RtcInit(void){
   if((RCC->BDCR & RCC_BDCR_RTCEN) != RCC_BDCR_RTCEN){
-    RCC->APB1ENR |= RCC_APB1ENR_PWREN;
-    RCC->APB1ENR |= RCC_APB1ENR_BKPEN;
+//    RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+//    RCC->APB1ENR |= RCC_APB1ENR_BKPEN;
     PWR->CR |= PWR_CR_DBP;
     RCC->BDCR |= RCC_BDCR_BDRST;
     RCC->BDCR &= ~RCC_BDCR_BDRST;

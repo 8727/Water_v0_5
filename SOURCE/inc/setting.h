@@ -4,18 +4,21 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 #include "main.h"
+#include "in.h"
+#include "gidrolock.h"
+#include "heating.h"
+#include "fan.h"
 #include "Ee24cxx.h"
 #include "rtc.h"
-#include "ili9488.h"
-#include "w25qxx.h"
-// #include "xpt2046.h"
-// #include "rs485.h"
-#include "dht22.h"
 #include "ds18b20.h"
-
+#include "dht22.h"
+#include "rs485.h"
+#include "w25qxx.h"
+#include "ili9488.h"
 
 /* Define --------------------------------------------------------------------*/
-#define NAME_BUILD              "v0.05"     // 0x09, 0x0A, 0x0B, 0x0C  // v0.05
+#define HARDWARE_BUILD          "v0.05"     // 0x09, 0x0A, 0x0B, 0x0C  // v0.05
+#define SOFTWARE_BUILD          "v0.05"     // 0x09, 0x0A, 0x0B, 0x0C  // v0.05
 #define DEVICE_NUMBER           0x01        // Device number
 #define RTC_CALIBRATION         0x00        // RTC CalibrationPpm
 #define CALIB_POWER_V           0x00        // CALIB_POWER_V
@@ -100,6 +103,7 @@ struct settingsInitTypeDef{
   uint32_t dateBuild;
   uint16_t canDevice;
   uint8_t  rtcCalibration;
+  int8_t   timezone;
   uint32_t canSpeed;
   uint16_t rs485Speed;
   int8_t   calibPowerV;

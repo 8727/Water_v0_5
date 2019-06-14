@@ -16,23 +16,6 @@ void DelayMs(uint32_t ms){
   while((GetTick() - tickstart) < ms){}
 }
 
-void Start(void){
-  SysTick_Config(SystemCoreClock / 1000);   //1ms
-  
-  RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
-  
-//  AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE + AFIO_MAPR_TIM2_REMAP_FULLREMAP + AFIO_MAPR_TIM4_REMAP + AFIO_MAPR_I2C1_REMAP;
-  AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE + AFIO_MAPR_TIM2_REMAP_FULLREMAP + AFIO_MAPR_TIM4_REMAP + AFIO_MAPR_I2C1_REMAP;
-  
-  RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
-  RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
-  RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
-  RCC->APB2ENR |= RCC_APB2ENR_IOPDEN;
-  RCC->APB2ENR |= RCC_APB2ENR_IOPEEN;
-  RCC->APB2ENR |= RCC_APB2ENR_IOPFEN;
-  RCC->APB2ENR |= RCC_APB2ENR_IOPGEN;
-}
-
 void CounterToBuffer(uint32_t counter, uint8_t* buff){
   buff[0x00] = (counter >> 0x18);
   buff[0x01] = (counter >> 0x10);
@@ -66,7 +49,7 @@ void ReadConfig(void){
     Ee24cxxWriteByte(EEPROM_DEVICE_N, DEVICE_NUMBER);
     Ee24cxxWriteByte(EEPROM_BUILD_TYPE,'S');
     Ee24cxxWriteByte(EEPROM_CALIBRATION, RTC_CALIBRATION);
-    Ee24cxxWritePage(EEPROM_NAME_BUILD, (uint8_t*)NAME_BUILD, 0x05);
+//    Ee24cxxWritePage(EEPROM_NAME_BUILD, (uint8_t*)NAME_BUILD, 0x05);
     Ee24cxxWriteByte(EEPROM_CALIB_POWER_V, CALIB_POWER_V);
     CounterToBuffer(CAN_SPEED, tempWriteBuff);
     Ee24cxxWritePage(EEPROM_CAN_SPEED, tempWriteBuff, 0x08);
@@ -109,17 +92,39 @@ void ReadConfig(void){
   }
 }
 
+void Start(void){
+  SysTick_Config(SystemCoreClock / 1000);   //1ms
+  
+  RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+  RCC->APB1ENR |= RCC_APB1ENR_BKPEN;
+  RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+  
+//  AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE + AFIO_MAPR_TIM2_REMAP_FULLREMAP + AFIO_MAPR_TIM4_REMAP + AFIO_MAPR_I2C1_REMAP;
+  AFIO->MAPR = AFIO_MAPR_SWJ_CFG_JTAGDISABLE + AFIO_MAPR_TIM2_REMAP_FULLREMAP + AFIO_MAPR_TIM4_REMAP + AFIO_MAPR_I2C1_REMAP;
+  
+  RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+  RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
+  RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
+  RCC->APB2ENR |= RCC_APB2ENR_IOPDEN;
+  RCC->APB2ENR |= RCC_APB2ENR_IOPEEN;
+  RCC->APB2ENR |= RCC_APB2ENR_IOPFEN;
+  RCC->APB2ENR |= RCC_APB2ENR_IOPGEN;
+}
+
 void Setting(void){
+  InInit();
+  GidrolockInit();
+  HeatingInit();
+  FanInit();
   Ee24cxxInit();
   ReadConfig();
   RtcInit();
-  LcdInit();
-  W25QxxInit();
-  GuiInit();
-//  Rs485Init();
-  Dht22Init();
   Ds18b20Init();
-
+  Dht22Init();
+//  Rs485Init();
+  W25QxxInit();
+  LcdInit();
+  GuiInit();
   
 //  TIM2->CCR1 = 0x20;
 //  DelayMs(100);

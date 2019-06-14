@@ -1,14 +1,13 @@
-#ifndef _FAN_H
-#define _FAN_H
+#ifndef _IN_H
+#define _IN_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 
 
 /* Define --------------------------------------------------------------------*/
-#define FAN_ON                  GPIOE->BSRR = GPIO_BSRR_BR6
-#define FAN_OFF                 GPIOE->BSRR = GPIO_BSRR_BS6
 
-void FanInit(void);
+
+void InInit(void);
 
 #endif /* _FAN_H */

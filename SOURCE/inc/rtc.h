@@ -6,8 +6,7 @@
 #include "setting.h"
 
 /* Define --------------------------------------------------------------------*/
-#define SEC_A_DAY 0x00015180
-
+#define SEC_A_DAY       0x00015180
 
 typedef struct{
   uint16_t year;    /* 1970..2106 */
