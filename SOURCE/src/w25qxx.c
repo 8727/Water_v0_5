@@ -141,10 +141,10 @@ void W25QxxInit(void){
   
   switch (w25qxx.id){
     case 0x16:  w25qxx.blocks = 0x40;
-                w25qxx.name = "W25Q32BV ";
+                w25qxx.name = "W25Q32BV";
     break;
     case 0x17:  w25qxx.blocks = 0x80;
-                w25qxx.name = "W25Q64FV ";
+                w25qxx.name = "W25Q64FV";
     break;
     case 0x18:  w25qxx.blocks = 0xFF;
                 w25qxx.name = "W25Q128FV";

@@ -119,7 +119,7 @@ void Setting(void){
   RtcInit();
   Ds18b20Init();
   Dht22Init();
-//  Rs485Init();
+  Rs485Init();
   W25QxxInit();
   LcdInit();
   GuiInit();

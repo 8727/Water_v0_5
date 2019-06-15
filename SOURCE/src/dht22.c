@@ -14,7 +14,7 @@ void Dht22Init(void){
   DMA1_Channel7->CNDTR = sizeof(dht22Delay)/sizeof(*dht22Delay);
   DMA1_Channel7->CCR = DMA_CCR7_PL_1 | DMA_CCR7_MSIZE_0 | DMA_CCR7_PSIZE_1 | DMA_CCR7_MINC | DMA_CCR7_CIRC | DMA_CCR7_DIR;
   DMA1->IFCR = DMA_IFCR_CGIF7 | DMA_IFCR_CHTIF7 | DMA_IFCR_CTCIF7 | DMA_IFCR_CTEIF7;
-  DMA1_Channel7->CCR |= DMA_CCR5_EN;//
+  DMA1_Channel7->CCR |= DMA_CCR5_EN;
   
   DMA1_Channel4->CCR = 0x00;
   DMA1_Channel4->CMAR = (uint32_t) &dht22.dataBuff[0x00];
@@ -71,6 +71,7 @@ void DMA1_Channel4_IRQHandler(void){
       dht22.humidity = (uint16_t)(tData >> 0x18);
       dht22.temperature = (uint16_t)(tData >> 0x08);
     }else{
+      
     }
     DMA1->IFCR = DMA_IFCR_CTCIF4;
   }

@@ -119,5 +119,5 @@ void LcdInit(void){
   DelayMs(0x78); // 120ms
   LCD_REG = 0x29;
   
-//  GuiFullWindow(BLACK);
+  GuiFullWindow(BLACK);
 }
