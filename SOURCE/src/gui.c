@@ -117,7 +117,7 @@ void GuiInit(void){
   DMA1_Channel3->CNDTR = 0x00;
   DMA1_Channel3->CCR |= DMA_CCR3_PL | DMA_CCR3_MSIZE_0 | DMA_CCR3_PSIZE_0 | DMA_CCR3_DIR;
   
-  NVIC_SetPriority(DMA1_Channel2_IRQn, PRIORITY_GUI);
+  NVIC_SetPriority(DMA1_Channel2_IRQn, PRIORITY_GUI_UPDATE);
   NVIC_EnableIRQ(DMA1_Channel2_IRQn);
   
   GuiLoadImg(0x00, 0x00, 0x00);
