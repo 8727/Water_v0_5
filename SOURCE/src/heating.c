@@ -109,30 +109,30 @@ void HeatingPWM(void){ // 10Hz
     if(heating.counter > heatingValve[i].delay){
       heatingValve[i].status = 0x00;
       switch(i){
-      case 0x00: R1_CLOSED;
-      break;
-      case 0x01: R2_CLOSED;
-      break;
-      case 0x02: R3_CLOSED;
-      break;
-      case 0x03: R4_CLOSED;
-      break;
-      case 0x04: R5_CLOSED;
-      break;
+        case 0x00: R1_CLOSED;
+        break;
+        case 0x01: R2_CLOSED;
+        break;
+        case 0x02: R3_CLOSED;
+        break;
+        case 0x03: R4_CLOSED;
+        break;
+        case 0x04: R5_CLOSED;
+        break;
       }
     }else{
       heatingValve[i].status = 0x01;
       switch(i){
-      case 0x00: R1_OPEN;
-      break;
-      case 0x01: R2_OPEN;
-      break;
-      case 0x02: R3_OPEN;
-      break;
-      case 0x03: R4_OPEN;
-      break;
-      case 0x04: R5_OPEN;
-      break;
+        case 0x00: R1_OPEN;
+        break;
+        case 0x01: R2_OPEN;
+        break;
+        case 0x02: R3_OPEN;
+        break;
+        case 0x03: R4_OPEN;
+        break;
+        case 0x04: R5_OPEN;
+        break;
       }
     }
   }
@@ -141,24 +141,9 @@ void HeatingPWM(void){ // 10Hz
   heating.counter++;
 }
 
-void TIM6_IRQHandler(void){
-  TIM6->SR &= ~TIM_SR_UIF;
-  HeatingPWM();
-}
-
 void HeatingInit(void){
   GPIOE->CRL &= ~(GPIO_CRL_MODE1 |GPIO_CRL_MODE2 | GPIO_CRL_MODE3 | GPIO_CRL_MODE4 | GPIO_CRL_MODE5);
   GPIOE->CRL &= ~(GPIO_CRL_CNF1 | GPIO_CRL_CNF2 | GPIO_CRL_CNF3 | GPIO_CRL_CNF4 | GPIO_CRL_CNF5);
   GPIOE->CRL |=  (GPIO_CRL_MODE1 |GPIO_CRL_MODE2 | GPIO_CRL_MODE3 | GPIO_CRL_MODE4 | GPIO_CRL_MODE5);
   GPIOE->CRL |=  (GPIO_CRL_CNF1_0 | GPIO_CRL_CNF2_0 | GPIO_CRL_CNF3_0 | GPIO_CRL_CNF4_0 | GPIO_CRL_CNF5_0);
-  
-  RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;
-  TIM6->PSC = 0x1F3F; // 7999 80000000:8000=10000Hz
-  TIM6->ARR = 0x03E7; // 10Hz
-  TIM6->SR = 0x00;
-  TIM6->DIER |= TIM_DIER_UIE;
-  TIM6->CR1 = TIM_CR1_CEN | TIM_CR1_ARPE;
-  
-  NVIC_SetPriority(TIM6_IRQn, PRIORITY_HEATING);
-  NVIC_EnableIRQ(TIM6_IRQn);
 }

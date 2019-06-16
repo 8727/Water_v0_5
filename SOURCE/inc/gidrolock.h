@@ -26,7 +26,7 @@
 #define OPEN                                GPIOE->BSRR = GPIO_BSRR_BS0  // M6
 
 
-
+void BlockWater(void);
 void GidrolockInit(void);
   
 #endif /* _GIDROLOCK_H */

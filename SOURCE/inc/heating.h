@@ -57,6 +57,7 @@ struct heatingValveInitTypeDef{
 extern struct heatingInitTypeDef heating;
 extern struct heatingValveInitTypeDef heatingValve[HEATING_MAX_DEVICES];
 
+void HeatingPWM(void);
 void HeatingInit(void);
 
 #endif /* _HEATING_H */

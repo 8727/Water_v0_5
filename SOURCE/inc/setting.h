@@ -112,7 +112,7 @@
 #define PRIORITY_CAN_RX1        0x00
 #define PRIORITY_CAN_ERROR      0x00
 #define PRIORITY_HEATING        0x00
-
+#define PRIORITY_ADC            0x00
 /* Define --------------------------------------------------------------------*/
 #define BUILD_YEAR (__DATE__[7] == '?' ? 1900 : (((__DATE__[7] - '0') * 1000 ) + (__DATE__[8] - '0') * 100 + (__DATE__[9] - '0') * 10 + __DATE__[10] - '0'))
 #define BUILD_MONTH (__DATE__ [2] == '?' ? 1 : __DATE__ [2] == 'n' ? (__DATE__ [1] == 'a' ? 1 : 6) : __DATE__ [2] == 'b' ? 2 : __DATE__ [2] == 'r' ? (__DATE__ [0] == 'M' ? 3 : 4) \
@@ -138,8 +138,20 @@ struct settingsInitTypeDef{
   uint16_t maxX;
   uint16_t maxY;
 
-  
- 
+  uint8_t  alarmSensor1;
+  uint8_t  alarmSensor2;
+  uint8_t  alarmSensor3;
+  uint8_t  alarmSensor4;
+  uint8_t  onOffSensor;
+  uint8_t  onAlarm;
+  int8_t   calibSensor1;
+  int8_t   calibSensor2;
+  int8_t   calibSensor3;
+  int8_t   calibSensor4;
+  int8_t   calibPressure1;
+  int8_t   calibPressure2;
+  int8_t   calibPressure3;
+  int8_t   calibPressure4;
   
 };
 extern struct settingsInitTypeDef settings;

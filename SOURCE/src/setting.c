@@ -99,6 +99,31 @@ void ReadConfig(void){
   heating.topTemperature = 500;  // 50 * 10
   heating.maxDelay = 200;        // 20sec * 10Hz
   
+  fan.interval = 9000;           // 15min * 60sec * 10Hz
+  fan.delay = 6000;              // 10min * 60sec * 10Hz
+  fan.gistHumidity = 30;         // 3 * 10
+  fan.gistTemperature = 0x00;    // 
+  fan.maxHumidity = 800;         // 80 * 10
+  fan.maxTemperature = 0x00;     // 
+  fan.sensorInterval = 600;       // 60sec * 10Hz
+}
+
+void TIM6_IRQHandler(void){
+  TIM6->SR &= ~TIM_SR_UIF;
+  HeatingPWM();
+  FanAnalyze();
+}
+
+void Timer10Hz(void){  
+  RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;
+  TIM6->PSC = 0x1F3F; // 7999 80000000:8000=10000Hz
+  TIM6->ARR = 0x03E7; // 10Hz
+  TIM6->SR = 0x00;
+  TIM6->DIER |= TIM_DIER_UIE;
+  TIM6->CR1 = TIM_CR1_CEN | TIM_CR1_ARPE;
+  
+  NVIC_SetPriority(TIM6_IRQn, PRIORITY_HEATING);
+  NVIC_EnableIRQ(TIM6_IRQn);
 }
 
 void Setting(void){
@@ -126,6 +151,7 @@ void Setting(void){
   FanInit();
   Ee24cxxInit();
   ReadConfig();
+  Timer10Hz();
   RtcInit();
   Ds18b20Init();
   Dht22Init();
