@@ -423,6 +423,11 @@
               <FilePath>..\SOURCE\src\in.c</FilePath>
             </File>
             <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\adc.c</FilePath>
+            </File>
+            <File>
               <FileName>gidrolock.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SOURCE\src\gidrolock.c</FilePath>
@@ -476,6 +481,11 @@
               <FileName>gui.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SOURCE\src\gui.c</FilePath>
+            </File>
+            <File>
+              <FileName>beep.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\beep.c</FilePath>
             </File>
           </Files>
         </Group>

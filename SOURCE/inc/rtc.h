@@ -5,6 +5,7 @@
 #include "stm32f10x.h"
 #include "setting.h"
 
+
 /* Define --------------------------------------------------------------------*/
 #define SEC_A_DAY       0x00015180
 

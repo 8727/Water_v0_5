@@ -5,6 +5,7 @@
 #include "stm32f10x.h"
 #include "main.h"
 #include "in.h"
+#include "adc.h"
 #include "gidrolock.h"
 #include "heating.h"
 #include "fan.h"
@@ -15,6 +16,7 @@
 #include "rs485.h"
 #include "w25qxx.h"
 #include "ili9488.h"
+#include "beep.h"
 
 /* Define --------------------------------------------------------------------*/
 #define HARDWARE_BUILD          "v0.05"     // 0x09, 0x0A, 0x0B, 0x0C  // v0.05
@@ -109,6 +111,7 @@
 #define PRIORITY_CAN_RX0        0x00
 #define PRIORITY_CAN_RX1        0x00
 #define PRIORITY_CAN_ERROR      0x00
+#define PRIORITY_HEATING        0x00
 
 /* Define --------------------------------------------------------------------*/
 #define BUILD_YEAR (__DATE__[7] == '?' ? 1900 : (((__DATE__[7] - '0') * 1000 ) + (__DATE__[8] - '0') * 100 + (__DATE__[9] - '0') * 10 + __DATE__[10] - '0'))

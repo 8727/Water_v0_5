@@ -2,8 +2,8 @@
 
 void RTC_IRQHandler(void){
   if(RTC->CRL & RTC_CRL_SECF){
-    if(0x00 != ds18b20Device) Ds18b20Read();
     RTC->CRL &= ~RTC_CRL_SECF;
+    if(0x00 != ds18b20Device) Ds18b20Read();
   }
 }
 

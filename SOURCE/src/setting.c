@@ -90,6 +90,15 @@ void ReadConfig(void){
       settings.maxY = 0x01E0;
     break;
   }
+  
+  heating.valveDefDelay = 100;   // 10sec * 10Hz
+  heating.valveInterval = 500;   // 50sec * 10Hz
+  heating.interval = 600;        // 60sec * 10Hz
+  heating.gistTemperature = 3;   // 0.3 * 10
+  heating.stepDelay = 2;         // 0.2sec * 10Hz
+  heating.topTemperature = 500;  // 50 * 10
+  heating.maxDelay = 200;        // 20sec * 10Hz
+  
 }
 
 void Setting(void){
@@ -111,6 +120,7 @@ void Setting(void){
   RCC->APB2ENR |= RCC_APB2ENR_IOPGEN;
   
   InInit();
+  ADCInit();
   GidrolockInit();
   HeatingInit();
   FanInit();
@@ -123,6 +133,7 @@ void Setting(void){
   W25QxxInit();
   LcdInit();
   GuiInit();
+  BeepInit();
   
 //  TIM2->CCR1 = 0x20;
 //  DelayMs(100);
