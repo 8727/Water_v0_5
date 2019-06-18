@@ -106,7 +106,7 @@ void HeatingPWM(void){ // 10Hz
       }
     }
     // 
-    if(heating.counter > heatingValve[i].delay){
+    if(heating.valveCounter > heatingValve[i].delay){
       heatingValve[i].status = 0x00;
       switch(i){
         case 0x00: R1_CLOSED;

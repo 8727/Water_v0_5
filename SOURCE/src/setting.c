@@ -76,16 +76,14 @@ void ReadConfig(void){
   settings.rs485Speed = RS485_SPEED;
   
   
-  
-  
-  settings.rotation = 0x09;
+
   switch(settings.rotation){
     case 0x27:  //Dspl_Rotation_270
     case 0x09:  //Dspl_Rotation_90
       settings.maxX = 0x01E0; 
       settings.maxY = 0x0140;
     break; 
-    default:  //Dspl_Rotation_0 Rotation_180
+    default:    //Dspl_Rotation_0 Rotation_180
       settings.maxX = 0x0140; 
       settings.maxY = 0x01E0;
     break;
@@ -112,6 +110,7 @@ void TIM6_IRQHandler(void){
   TIM6->SR &= ~TIM_SR_UIF;
   HeatingPWM();
   FanAnalyze();
+  ADCAlarm();
 }
 
 void Timer10Hz(void){  
@@ -161,7 +160,5 @@ void Setting(void){
   GuiInit();
   BeepInit();
   
-//  TIM2->CCR1 = 0x20;
-//  DelayMs(100);
 //  W25QxxEraseBlocks();
 }

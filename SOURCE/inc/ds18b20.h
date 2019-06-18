@@ -3,8 +3,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
+#include "string.h"
 #include "setting.h"
-#include <string.h>
+
 
 /* Define --------------------------------------------------------------------*/
 #define DS18B20_SEARCH                      0xF0 //команда поиска ROM
@@ -14,7 +15,7 @@
 #define DS18B20_READ_SCRATCHPAD             0xBE //команда для чтения памяти датчика
 #define DS18B20_WRITE_SCRATCHPAD            0x4E //команда запись в память дтачика
 
-#define DS18B20_MAX_DEVICES                 0x04
+#define DS18B20_MAX_DEVICES                 0x08
 
 struct Ds18b20InitTypeDef{
   uint8_t deviceID[0x08];
