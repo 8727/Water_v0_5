@@ -109,7 +109,11 @@ void Ds18b20SearchROM(void){
   ds18b20Device = 0x00;
   for(i = 0x00; i < DS18B20_MAX_DEVICES; i++){
     if(Ds18b20Search(rom)){
-    memcpy (ds18b20[i].deviceID, rom,sizeof(rom));
+      memcpy (ds18b20[i].deviceID, rom,sizeof(rom));
+      #if (defined (DEBUG) || defined(INFO))
+        printf("Sensor < %d > ID : %02X %02X %02X %02X %02X %02X %02X %02X\r\n",
+        i ,rom[0x00], rom[0x01], rom[0x02], rom[0x03], rom[0x04], rom[0x05], rom[0x06], rom[0x07]);
+      #endif
     }else break;
   }
 }
@@ -117,13 +121,19 @@ void Ds18b20SearchROM(void){
 void Ds18b20Read(void){
   uint16_t temp;
   for(uint8_t i = 0x00; i < ds18b20Device; i++){
-  Ds18b20Reset();
-  Ds18b20SendByte(DS18B20_MATCH_ROM);
-  for(uint8_t x = 0x00; x < 0x08; x++) Ds18b20SendByte(ds18b20[i].deviceID[x]);
-  Ds18b20SendByte(DS18B20_READ_SCRATCHPAD);
-  temp = (Ds18b20ReadByte() << 0x08) | Ds18b20ReadByte();
-  ds18b20[i].temperature = ((temp & 0x0FFF) >> 0x04);
-  ds18b20[i].fraction = ((temp & 0x000F) * 0.625);
+    Ds18b20Reset();
+    Ds18b20SendByte(DS18B20_MATCH_ROM);
+    for(uint8_t x = 0x00; x < 0x08; x++) Ds18b20SendByte(ds18b20[i].deviceID[x]);
+    Ds18b20SendByte(DS18B20_READ_SCRATCHPAD);
+    temp = (Ds18b20ReadByte() << 0x08) | Ds18b20ReadByte();
+    ds18b20[i].temperature = ((temp & 0x0FFF) >> 0x04);
+    ds18b20[i].fraction = ((temp & 0x000F) * 0.625);
+    #if (defined (DEBUG) || defined(INFO))
+      printf("Sensor < %d > ID : %02X %02X %02X %02X %02X %02X %02X %02X Temper: %d.%02d\r\n",
+      i ,ds18b20[i].deviceID[0x00], ds18b20[i].deviceID[0x01], ds18b20[i].deviceID[0x02], ds18b20[i].deviceID[0x03],
+      ds18b20[i].deviceID[0x04], ds18b20[i].deviceID[0x05], ds18b20[i].deviceID[0x06], ds18b20[i].deviceID[0x07],
+      ds18b20[i].temperature, ds18b20[i].fraction);
+    #endif
   }
   Ds18b20Reset();
   Ds18b20SendByte(DS18B20_SKIP_ROM);

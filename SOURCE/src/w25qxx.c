@@ -15,6 +15,9 @@ void W25QxxWriteWaitEnd(void){
   W25QxxWriteRead(CMD_R_STATUS_1);
   do{
     status = W25QxxWriteRead(0x00);
+    #if (defined (DEBUG) || defined(INFO))
+      printf("EEPROM Wait...\r\n");
+    #endif
   }while((status & 0x01) == 0x01);
   W25Qxx_CS_HIGHT;
 }
@@ -52,8 +55,8 @@ void W25QxxEraseBlocks(void){
     W25Qxx_CS_HIGHT;
 //    GuiEraseBlocks(i);
     W25QxxWriteWaitEnd();
+    W25QxxWriteOff();
   }
-  W25QxxWriteOff();
 }
 
 void W25QxxReadPage(uint16_t page, uint8_t *buff){
@@ -153,5 +156,8 @@ void W25QxxInit(void){
                 w25qxx.name = "XXXXXXXXX";
     break;
   }
+  #if (defined (DEBUG) || defined(INFO))
+    printf("EEPROM : %s\r\n", w25qxx.name);
+  #endif
   W25QxxReadTable();
 }

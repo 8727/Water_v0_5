@@ -70,6 +70,9 @@ void DMA1_Channel4_IRQHandler(void){
     if(tCRC == tDataBuff[0x00]){
       dht22.humidity = (uint16_t)(tData >> 0x18);
       dht22.temperature = (uint16_t)(tData >> 0x08);
+      #if (defined (DEBUG) || defined(INFO))
+        printf("DHT22 Temper: %d.%d Hum: %d.%d\r\n", (dht22.temperature / 10), (dht22.temperature % 10), (dht22.humidity / 10), (dht22.humidity % 10));
+      #endif
     }else{
       dht22.humidity = 0xFFFF;
       dht22.temperature = 0xFFFF;

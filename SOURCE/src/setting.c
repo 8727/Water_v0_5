@@ -143,22 +143,70 @@ void Setting(void){
   RCC->APB2ENR |= RCC_APB2ENR_IOPFEN;
   RCC->APB2ENR |= RCC_APB2ENR_IOPGEN;
   
-  InInit();
+  InInit(); 
+  #if defined(INFO) 
+    printf("< OK >    Initialization PORTS\r\n");
+  #endif
   ADCInit();
+  #if defined(INFO)
+    printf("< OK >    Initialization SENSORS\r\n");
+  #endif
   GidrolockInit();
+  #if defined(INFO)
+    printf("< OK >    Initialization CRANES\r\n");
+  #endif
   HeatingInit();
+  #if defined(INFO)
+    printf("< OK >    Initialization HEATING\r\n");
+  #endif
   FanInit();
+  #if defined(INFO)
+    printf("< OK >    Initialization FAN\r\n");
+  #endif
   Ee24cxxInit();
+  #if defined(INFO)
+    printf("< OK >    Initialization EE24Cxx\r\n");
+  #endif
   ReadConfig();
+  #if defined(INFO)
+    printf("< OK >    Read configuration\r\n");
+  #endif
   Timer10Hz();
+  #if defined(INFO)
+    printf("< OK >    Start Timer 10Hz\r\n");
+  #endif
   RtcInit();
+  #if defined(INFO)
+    printf("< OK >    Initialization RTC\r\n");
+  #endif
   Ds18b20Init();
+  #if defined(INFO)
+    printf("< OK >    Initialization DS18B20\r\n");
+  #endif
   Dht22Init();
+  #if defined(INFO)
+    printf("< OK >    Initialization DHT22\r\n");
+  #endif
   Rs485Init();
+  #if defined(INFO)
+    printf("< OK >    Initialization RS485\r\n");
+  #endif
   W25QxxInit();
+  #if defined(INFO)
+    printf("< OK >    Initialization W25Qxx\r\n");
+  #endif
   LcdInit();
+  #if defined(INFO)
+    printf("< OK >    Initialization LCD\r\n");
+  #endif
   GuiInit();
+  #if defined(INFO)
+    printf("< OK >    Initialization GUI\r\n");
+  #endif
   BeepInit();
+  #if defined(INFO)
+    printf("< OK >    Initialization BEEP\r\n");
+  #endif
   
 //  W25QxxEraseBlocks();
 }

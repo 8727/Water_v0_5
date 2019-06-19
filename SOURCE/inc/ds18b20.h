@@ -19,7 +19,7 @@
 
 struct Ds18b20InitTypeDef{
   uint8_t deviceID[0x08];
-  uint8_t temperature;
+  int8_t  temperature;
   uint8_t fraction;
 };
 

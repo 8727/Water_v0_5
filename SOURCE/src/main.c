@@ -1,7 +1,7 @@
 #include "main.h"
 
-#if defined(DEBUG)
-  struct __FILE { int handle; /* Add whatever you need here */ };
+#if (defined (DEBUG) || defined(INFO))
+  struct __FILE { int handle; };
   FILE __stdout;
   FILE __stdin;
 
@@ -16,7 +16,7 @@
 
 int main(void){
   #if defined(DEBUG)
-    printf("Start \n\r");
+    printf("Start setting\n\r //********************************//\r\n");
   #endif
   Setting();
   while(0x01){

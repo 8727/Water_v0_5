@@ -7,11 +7,11 @@
 
 #include "setting.h"
 /* Define --------------------------------------------------------------------*/
-//#define DEBUG
-//#define INFO
+#define DEBUG
+#define INFO
 
 /* Define --------------------------------------------------------------------*/
-#if defined(DEBUG)
+#if (defined (DEBUG) || defined(INFO))
   #define ITM_Port8(n)    (*((volatile unsigned char *)(0xE0000000+4*n)))
   #define ITM_Port16(n)   (*((volatile unsigned short*)(0xE0000000+4*n)))
   #define ITM_Port32(n)   (*((volatile unsigned long *)(0xE0000000+4*n)))
