@@ -1,5 +1,6 @@
 #include "in.h"
 
-void InInit(void){
+uint8_t InInit(void){
   
+  return 0x01;
 }

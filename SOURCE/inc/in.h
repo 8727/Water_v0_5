@@ -8,6 +8,6 @@
 /* Define --------------------------------------------------------------------*/
 
 
-void InInit(void);
+uint8_t InInit(void);
 
 #endif /* _FAN_H */

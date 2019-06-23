@@ -143,9 +143,11 @@ void Setting(void){
   RCC->APB2ENR |= RCC_APB2ENR_IOPFEN;
   RCC->APB2ENR |= RCC_APB2ENR_IOPGEN;
   
-  InInit(); 
-  #if defined(INFO) 
-    printf("< OK >    Initialization PORTS\r\n");
+  uint8_t info = 0x00;
+  info = InInit(); 
+  #if defined(INFO)
+    if(0x00 == info){ printf("<ERROR>"); }else{ printf("< OK >"); }
+    printf("    Initialization PORTS\r\n");
   #endif
   ADCInit();
   #if defined(INFO)
