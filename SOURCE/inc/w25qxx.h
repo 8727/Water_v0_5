@@ -49,7 +49,7 @@ void W25QxxReadPage(uint16_t page, uint8_t *buff);
 void W25QxxWritePage(uint16_t page, uint8_t *buff);
 void W25QxxReadTable(void);
 void W25QxxInit(void);
-void W25QxxDMAInit(void);
+//void W25QxxDMAInit(void);
 
 void GuiLoadImg(uint16_t x, uint16_t y, uint8_t numb);
 #endif /* _W25QXX_H */

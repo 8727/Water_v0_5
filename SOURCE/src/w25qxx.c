@@ -156,8 +156,12 @@ void W25QxxInit(void){
                 w25qxx.name = "XXXXXXXXX";
     break;
   }
+  
+  #if defined(DEBUG)
+    printf("< OK >    Initialization W25Qxx\r\n");
+  #endif
   #if (defined (DEBUG) || defined(INFO))
-    printf("EEPROM : %s\r\n", w25qxx.name);
+    printf("< OK >    EEPROM : %s\r\n", w25qxx.name);
   #endif
   W25QxxReadTable();
 }

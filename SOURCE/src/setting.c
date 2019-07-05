@@ -16,78 +16,160 @@ void DelayMs(uint32_t ms){
   while((GetTick() - tickstart) < ms){}
 }
 
-void CounterToBuffer(uint32_t counter, uint8_t* buff){
-  buff[0x00] = (counter >> 0x18);
-  buff[0x01] = (counter >> 0x10);
-  buff[0x02] = (counter >> 0x08);
-  buff[0x03] = counter; 
+void WriteData32ToBuffer(uint8_t addr, uint32_t data, uint8_t* buff){
+  buff[addr] = (data >> 0x18);
+  buff[addr + 0x01] = (data >> 0x10);
+  buff[addr + 0x02] = (data >> 0x08);
+  buff[addr + 0x03] = data; 
 }
 
-uint32_t BufferToCounter(uint8_t* buff){
-  uint32_t data = buff[0x00] << 0x18;
-  data |= buff[0x01] << 0x10;
-  data |= buff[0x02] << 0x08;
-  data |= buff[0x03]; 
+void WriteData16ToBuffer(uint8_t addr, uint16_t data, uint8_t* buff){
+  buff[addr] = (data >> 0x08);
+  buff[addr + 0x01] = data;
+}
+
+uint32_t ReadData32Buffer(uint8_t addr, uint8_t* buff){
+  uint32_t data = buff[addr] << 0x18;
+  data |= buff[addr + 0x01] << 0x10;
+  data |= buff[addr + 0x02] << 0x08;
+  data |= buff[addr + 0x03]; 
+  return data;
+}
+
+uint16_t ReadData16Buffer(uint8_t addr, uint8_t* buff){
+  uint16_t data = buff[addr] << 0x08;
+  data |= buff[addr + 0x01];
   return data;
 }
 
 void ReadConfig(void){
-  uint8_t tempReadBuff[0x30];
-//  uint8_t tempWriteBuff[0x08];
-  Ee24cxxRead(0x00, tempReadBuff, 0x30);
-//  if(0xFF != tempReadBuff[ADDR_EEPROM_STATUS]){
-//    RtcTypeDef unixTime;
-//    unixTime.year  = BUILD_YEAR;
-//    unixTime.month = BUILD_MONTH;
-//    unixTime.day   = BUILD_DAY;
-//    unixTime.hour  = BUILD_TIME_H;
-//    unixTime.min   = BUILD_TIME_M;
-//    unixTime.sec   = BUILD_TIME_S;
-//    CounterToBuffer(RtcTimeToCounter(&unixTime), tempWriteBuff);
-//    Ee24cxxWritePage(ADDR_EEPROM_BUILD_DATE, tempWriteBuff, 0x04);
-//    Ee24cxxWriteByte(ADDR_EEPROM_STATUS, 0x00);
-//    Ee24cxxWriteByte(ADDR_EEPROM_DEVICE_N, DEVICE_NUMBER);
-//    Ee24cxxWriteByte(EEPROM_BUILD_TYPE,'S');
-//    Ee24cxxWriteByte(EEPROM_CALIBRATION, RTC_CALIBRATION);
-//    Ee24cxxWritePage(EEPROM_NAME_BUILD, (uint8_t*)NAME_BUILD, 0x05);
-//    Ee24cxxWriteByte(EEPROM_CALIB_POWER_V, CALIB_POWER_V);
-//    CounterToBuffer(CAN_SPEED, tempWriteBuff);
-//    Ee24cxxWritePage(EEPROM_CAN_SPEED, tempWriteBuff, 0x08);
-//    Ee24cxxWriteByte(EEPROM_RS485_SPEED, ((uint8_t)RS485_SPEED >> 0x08));
-//    Ee24cxxWriteByte(EEPROM_RS485_SPEED + 0x01, (uint8_t)RS485_SPEED);
-//    
-//    
-//    for(uint8_t i = 0x80; i < 0xFF; i += 0x08){
-//      Ee24cxxWritePage(i, 0x00, 0x08);
-//    }
-    settings.rotation = 0x09;
+  uint8_t buffEeprom[EEPROM_BUFF];
+  Ee24cxxRead(buffEeprom);
+  if(0xFF != buffEeprom[ADDR_STATUS]){
+    RtcTypeDef dateBuild;
+    dateBuild.year  = BUILD_YEAR;
+    dateBuild.month = BUILD_MONTH;
+    dateBuild.day   = BUILD_DAY;
+    dateBuild.hour  = BUILD_TIME_H;
+    dateBuild.min   = BUILD_TIME_M;
+    dateBuild.sec   = BUILD_TIME_S;
+    WriteData32ToBuffer(ADDR_DATE_BUILD, RtcTimeToSeconds(&dateBuild), buffEeprom);
+    buffEeprom[ADDR_STATUS] = STATUS;
+    buffEeprom[ADDR_DEVICE_NUMBER] = DEVICE_NUMBER;
+    buffEeprom[ADDR_DEVICE_TYPE] = DEVICE_TYPE;
+    buffEeprom[ADDR_RTC_CALIBRATION] = RTC_CALIBRATION;
+    WriteData32ToBuffer(ADDR_CAN_SPEED, CAN_SPEED, buffEeprom);
+    WriteData16ToBuffer(ADDR_RS485_SPEED, RS485_SPEED, buffEeprom);
     
-    Ee24cxxRead(0x00, tempReadBuff, 0x30);
-//  }
-//  settings.type = tempReadBuff[ADDR_EEPROM_BUILD_TYPE];
-//  settings.number = tempReadBuff[ADDR_EEPROM_DEVICE_N];
-  settings.dateBuild = BufferToCounter(tempReadBuff);
-  settings.canDevice = 0x0000 + (settings.number << 0x04);
-//  settings.rtcCalibration = tempReadBuff[ADDR_EEPROM_CALIBRATION];
-//  settings.calibPowerV = tempReadBuff[ADDR_EEPROM_CALIB_POWER_V];
-  settings.canSpeed = (tempReadBuff[ADDR_EEPROM_CAN_SPEED] << 0x18)| (tempReadBuff[ADDR_EEPROM_CAN_SPEED + 0x01] << 0x10) |
-                      (tempReadBuff[ADDR_EEPROM_CAN_SPEED + 0x02] << 0x08)| (tempReadBuff[ADDR_EEPROM_CAN_SPEED + 0x03]);
-//  settings.rs485Speed = (tempReadBuff[EEPROM_RS485_SPEED] << 0x08)| tempReadBuff[EEPROM_RS485_SPEED + 0x01];
-  settings.rs485Speed = RS485_SPEED;
+    buffEeprom[ADDR_LCD_ROTATION] = LCD_ROTATION;
+    buffEeprom[ADDR_TIME_ZONE] = TIME_ZONE;
+    
+    buffEeprom[ADDR_RF24_SP_PW] = RF24_SP_PW;
+    buffEeprom[ADDR_RF24_CH] = RF24_CH;
+    WriteData32ToBuffer(ADDR_RF24_TX_ADR, RF24_TX_ADR, buffEeprom);
+    WriteData32ToBuffer(ADDR_RF24_RX0_ADR, RF24_RX0_ADR, buffEeprom);
+    WriteData32ToBuffer(ADDR_RF24_RX1_ADR, RF24_RX1_ADR, buffEeprom);
+    buffEeprom[ADDR_RF24_RX2_ADR] = RF24_RX2_ADR;
+    buffEeprom[ADDR_RF24_RX3_ADR] = RF24_RX3_ADR;
+    buffEeprom[ADDR_RF24_RX4_ADR] = RF24_RX4_ADR;
+    buffEeprom[ADDR_RF24_RX5_ADR] = RF24_RX5_ADR;
+/*----------------------------------------------------------------------------*/
+    buffEeprom[ADDR_CALIB_SENSOR1] = CALIB_SENSOR1;
+    buffEeprom[ADDR_CALIB_SENSOR2] = CALIB_SENSOR2;
+    buffEeprom[ADDR_CALIB_SENSOR3] = CALIB_SENSOR3;
+    buffEeprom[ADDR_CALIB_SENSOR4] = CALIB_SENSOR4;
+    buffEeprom[ADDR_CALIB_PRESSURE1] = CALIB_PRESSURE1;
+    buffEeprom[ADDR_CALIB_PRESSURE2] = CALIB_PRESSURE2;
+    buffEeprom[ADDR_CALIB_PRESSURE3] = CALIB_PRESSURE3;
+    buffEeprom[ADDR_CALIB_PRESSURE4] = CALIB_PRESSURE4;
+    buffEeprom[ADDR_ALARM_SENSOR1] = ALARM_SENSOR1;
+    buffEeprom[ADDR_ALARM_SENSOR2] = ALARM_SENSOR2;
+    buffEeprom[ADDR_ALARM_SENSOR3] = ALARM_SENSOR3;
+    buffEeprom[ADDR_ALARM_SENSOR4] = ALARM_SENSOR4;
+    buffEeprom[ADDR_SENSOR_ON_OFF] = SENSOR_ON_OFF;
+    
+    buffEeprom[ADDR_CALIB_POWER_V] = CALIB_POWER_V;
+    WriteData16ToBuffer(ADDR_SENSOR_INTRV, SENSOR_INTRV, buffEeprom);
+    WriteData16ToBuffer(ADDR_MAX_JOB, MAX_JOB, buffEeprom);
+    WriteData16ToBuffer(ADDR_INTERVAL_HUM, INTERVAL_HUM, buffEeprom);
+    WriteData16ToBuffer(ADDR_DELAY_HUM, DELAY_HUM, buffEeprom);
+    WriteData16ToBuffer(ADDR_MAX_TEMPR, MAX_TEMPR, buffEeprom);
+    WriteData16ToBuffer(ADDR_MAX_HUM, MAX_HUM, buffEeprom);
+    buffEeprom[ADDR_GIST_TEMPR] = GIST_TEMPR;
+    buffEeprom[ADDR_GIST_HUM] = GIST_HUM;
+    
+    
+    
+    
+    
+    
+/*----------------------------------------------------------------------------*/
+    Ee24cxxWrite(buffEeprom);
+  }
+  settings.dateBuild = ReadData32Buffer(ADDR_DATE_BUILD, buffEeprom);
+  settings.number = buffEeprom[ADDR_DEVICE_NUMBER];
+  settings.type = buffEeprom[ADDR_DEVICE_TYPE];
+  settings.rtcCalib = buffEeprom[ADDR_RTC_CALIBRATION];
   
-  
-
+  settings.rotation = buffEeprom[ADDR_LCD_ROTATION];
   switch(settings.rotation){
-    case 0x27:  //Dspl_Rotation_270
-    case 0x09:  //Dspl_Rotation_90
+    case 0x27:                  //Dspl_Rotation_270
+    case 0x09:                  //Dspl_Rotation_90
       settings.maxX = 0x01E0; 
       settings.maxY = 0x0140;
     break; 
-    default:    //Dspl_Rotation_0 Rotation_180
+    default:                    //Dspl_Rotation_0 Rotation_180
       settings.maxX = 0x0140; 
       settings.maxY = 0x01E0;
     break;
   }
+  settings.canSpeed = ReadData32Buffer(ADDR_CAN_SPEED, buffEeprom);
+  settings.rs485Speed = ReadData16Buffer(ADDR_RS485_SPEED, buffEeprom);
+  
+  settings.rf24SpeedPower = buffEeprom[ADDR_RF24_SP_PW];
+  settings.rf24Ch = buffEeprom[ADDR_RF24_CH];
+  settings.rf24Tx = ReadData32Buffer(ADDR_RF24_TX_ADR, buffEeprom);
+  settings.rf24Rx0 = ReadData32Buffer(ADDR_RF24_RX0_ADR, buffEeprom);
+  settings.rf24Rx1 = ReadData32Buffer(ADDR_RF24_RX1_ADR, buffEeprom);
+  settings.rf24Rx2 = buffEeprom[ADDR_RF24_RX2_ADR];
+  settings.rf24Rx3 = buffEeprom[ADDR_RF24_RX3_ADR];
+  settings.rf24Rx4 = buffEeprom[ADDR_RF24_RX4_ADR];
+  settings.rf24Rx5 = buffEeprom[ADDR_RF24_RX5_ADR];  
+  settings.calibSensor1 = buffEeprom[ADDR_CALIB_SENSOR1];
+  settings.calibSensor2 = buffEeprom[ADDR_CALIB_SENSOR2];
+  settings.calibSensor3 = buffEeprom[ADDR_CALIB_SENSOR3];
+  settings.calibSensor4 = buffEeprom[ADDR_CALIB_SENSOR4];
+  settings.calibPressure1 = buffEeprom[ADDR_CALIB_PRESSURE1];
+  settings.calibPressure2 = buffEeprom[ADDR_CALIB_PRESSURE2];
+  settings.calibPressure3 = buffEeprom[ADDR_CALIB_PRESSURE3];
+  settings.calibPressure4 = buffEeprom[ADDR_CALIB_PRESSURE4];
+  settings.alarmSensor1 = buffEeprom[ADDR_ALARM_SENSOR1];
+  settings.alarmSensor2 = buffEeprom[ADDR_ALARM_SENSOR2];
+  settings.alarmSensor3 = buffEeprom[ADDR_ALARM_SENSOR3];
+  settings.alarmSensor4 = buffEeprom[ADDR_ALARM_SENSOR4];
+  settings.sensorOnOff = buffEeprom[ADDR_SENSOR_ON_OFF];
+  
+  settings.calibPowerV = buffEeprom[ADDR_CALIB_POWER_V];
+  settings.fanSensorInterval = ReadData16Buffer(ADDR_SENSOR_INTRV, buffEeprom);
+  settings.fanMaxJob = ReadData16Buffer(ADDR_MAX_JOB, buffEeprom);
+  settings.fanIntervalHum = ReadData16Buffer(ADDR_INTERVAL_HUM, buffEeprom);
+  settings.fanDelayHum = ReadData16Buffer(ADDR_DELAY_HUM, buffEeprom);
+  settings.fanMaxTemperature = ReadData16Buffer(ADDR_MAX_TEMPR, buffEeprom);
+  settings.fanMaxHumidity = ReadData16Buffer(ADDR_MAX_HUM, buffEeprom);
+  settings.fanGistTemperature = buffEeprom[ADDR_GIST_TEMPR];
+  settings.fanGistHumidity = buffEeprom[ADDR_GIST_HUM];
+  
+  
+  
+  settings.canDevice = (settings.type << 0x08) | (settings.number << 0x04);
+/*----------------------------------------------------------------------------*/
+  
+  
+  
+  
+  
+  
+  
   
   heating.valveDefDelay = 100;   // 10sec * 10Hz
   heating.valveInterval = 500;   // 50sec * 10Hz
@@ -97,13 +179,14 @@ void ReadConfig(void){
   heating.topTemperature = 500;  // 50 * 10
   heating.maxDelay = 200;        // 20sec * 10Hz
   
-  fan.interval = 9000;           // 15min * 60sec * 10Hz
-  fan.delay = 6000;              // 10min * 60sec * 10Hz
-  fan.gistHumidity = 30;         // 3 * 10
-  fan.gistTemperature = 0x00;    // 
-  fan.maxHumidity = 800;         // 80 * 10
-  fan.maxTemperature = 0x00;     // 
-  fan.sensorInterval = 600;       // 60sec * 10Hz
+/*----------------------------------------------------------------------------*/
+  
+  dht22.humidity = 0xFFFF;
+  dht22.temperature = 0xFFFF;
+  
+  #if defined(DEBUG)
+    printf("< OK >    Read configuration\r\n");
+  #endif
 }
 
 void TIM6_IRQHandler(void){
@@ -123,6 +206,10 @@ void Timer10Hz(void){
   
   NVIC_SetPriority(TIM6_IRQn, PRIORITY_HEATING);
   NVIC_EnableIRQ(TIM6_IRQn);
+  
+  #if defined(DEBUG)
+    printf("< OK >    Start Timer 10Hz\r\n");
+  #endif
 }
 
 void Setting(void){
@@ -143,72 +230,23 @@ void Setting(void){
   RCC->APB2ENR |= RCC_APB2ENR_IOPFEN;
   RCC->APB2ENR |= RCC_APB2ENR_IOPGEN;
   
-  uint8_t info = 0x00;
-  info = InInit(); 
-  #if defined(INFO)
-    if(0x00 == info){ printf("<ERROR>"); }else{ printf("< OK >"); }
-    printf("    Initialization PORTS\r\n");
-  #endif
+  InInit(); 
   ADCInit();
-  #if defined(INFO)
-    printf("< OK >    Initialization SENSORS\r\n");
-  #endif
   GidrolockInit();
-  #if defined(INFO)
-    printf("< OK >    Initialization CRANES\r\n");
-  #endif
   HeatingInit();
-  #if defined(INFO)
-    printf("< OK >    Initialization HEATING\r\n");
-  #endif
   FanInit();
-  #if defined(INFO)
-    printf("< OK >    Initialization FAN\r\n");
-  #endif
   Ee24cxxInit();
-  #if defined(INFO)
-    printf("< OK >    Initialization EE24Cxx\r\n");
-  #endif
   ReadConfig();
-  #if defined(INFO)
-    printf("< OK >    Read configuration\r\n");
-  #endif
   Timer10Hz();
-  #if defined(INFO)
-    printf("< OK >    Start Timer 10Hz\r\n");
-  #endif
   RtcInit();
-  #if defined(INFO)
-    printf("< OK >    Initialization RTC\r\n");
-  #endif
   Ds18b20Init();
-  #if defined(INFO)
-    printf("< OK >    Initialization DS18B20\r\n");
-  #endif
   Dht22Init();
-  #if defined(INFO)
-    printf("< OK >    Initialization DHT22\r\n");
-  #endif
+  Nrf24Init();
   Rs485Init();
-  #if defined(INFO)
-    printf("< OK >    Initialization RS485\r\n");
-  #endif
   W25QxxInit();
-  #if defined(INFO)
-    printf("< OK >    Initialization W25Qxx\r\n");
-  #endif
   LcdInit();
-  #if defined(INFO)
-    printf("< OK >    Initialization LCD\r\n");
-  #endif
   GuiInit();
-  #if defined(INFO)
-    printf("< OK >    Initialization GUI\r\n");
-  #endif
   BeepInit();
-  #if defined(INFO)
-    printf("< OK >    Initialization BEEP\r\n");
-  #endif
   
 //  W25QxxEraseBlocks();
 }

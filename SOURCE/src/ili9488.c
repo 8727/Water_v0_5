@@ -98,13 +98,13 @@ void LcdInit(void){
   LCD_REG = 0x36;
   switch(settings.rotation){
     case 0x27: LCD_DATA = 0xE8; //Dspl_Rotation_270
-    break;
+  break;
     case 0x18: LCD_DATA = 0x88;  //Dspl_Rotation_180
-    break;
+  break;
     case 0x09: LCD_DATA = 0x38;  //Dspl_Rotation_90
-    break;
+  break;
     default: LCD_DATA = 0x48;  //Dspl_Rotation_0
-    break;
+  break;
   }
   LCD_REG = 0x3A;
   LCD_DATA = 0x55;
@@ -120,4 +120,8 @@ void LcdInit(void){
   LCD_REG = 0x29;
   
   GuiFullWindow(BLACK);
+  
+  #if defined(DEBUG)
+    printf("< OK >    Initialization LCD\r\n");
+  #endif
 }

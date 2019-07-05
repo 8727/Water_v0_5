@@ -20,10 +20,10 @@ typedef struct{
 }RtcTypeDef;
 
 
-void RtcCounterToTime (uint32_t counter, RtcTypeDef* unixTime);
-uint32_t RtcTimeToCounter(RtcTypeDef* unixTime);
-uint32_t RtcGetCounter(void);
-void RtcSetCounter(uint32_t count);
+void RtcSecondsToTime (uint32_t counter, RtcTypeDef* unixTime);
+uint32_t RtcTimeToSeconds(RtcTypeDef* unixTime);
+uint32_t RtcGetSeconds(void);
+void RtcSetSeconds(uint32_t count);
 void RtcInit(void);
 
 #endif /* _RTC_H */

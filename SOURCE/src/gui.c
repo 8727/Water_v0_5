@@ -101,28 +101,6 @@ void GuiBr(void){
 
 
 
-
-
-void GuiInit(void){
-  RCC->AHBENR |= RCC_AHBENR_DMA1EN;
-  
-  DMA1_Channel2->CCR = 0x00;
-  DMA1_Channel2->CPAR = (uint32_t)&SPI1->DR;
-  DMA1_Channel2->CMAR = 0x60020000;
-  DMA1_Channel2->CNDTR = 0x00;
-  DMA1_Channel2->CCR = DMA_CCR2_PL | DMA_CCR2_MSIZE_0 | DMA_CCR2_PSIZE_0 | DMA_CCR2_TCIE;
-  
-  DMA1_Channel3->CPAR = (uint32_t)&SPI1->DR;
-  DMA1_Channel3->CMAR = (uint32_t)&buffDMA;
-  DMA1_Channel3->CNDTR = 0x00;
-  DMA1_Channel3->CCR |= DMA_CCR3_PL | DMA_CCR3_MSIZE_0 | DMA_CCR3_PSIZE_0 | DMA_CCR3_DIR;
-  
-  NVIC_SetPriority(DMA1_Channel2_IRQn, PRIORITY_GUI_UPDATE);
-  NVIC_EnableIRQ(DMA1_Channel2_IRQn);
-  
-  GuiLoadImg(0x00, 0x00, 0x00);
-}
-
 void DMA1_Channel2_IRQHandler(void){
   DMA1->IFCR |= DMA_IFCR_CGIF2;
   DMA1_Channel2->CCR &= ~DMA_CCR2_EN;
@@ -162,4 +140,28 @@ void GuiLoadImg(uint16_t x, uint16_t y, uint8_t numb){
   SPI1->CR2 |= SPI_CR2_RXDMAEN | SPI_CR2_TXDMAEN;
   DMA1_Channel2->CCR |= DMA_CCR2_EN;
   DMA1_Channel3->CCR |= DMA_CCR3_EN;
+}
+
+void GuiInit(void){
+  RCC->AHBENR |= RCC_AHBENR_DMA1EN;
+  
+  DMA1_Channel2->CCR = 0x00;
+  DMA1_Channel2->CPAR = (uint32_t)&SPI1->DR;
+  DMA1_Channel2->CMAR = 0x60020000;
+  DMA1_Channel2->CNDTR = 0x00;
+  DMA1_Channel2->CCR = DMA_CCR2_PL | DMA_CCR2_MSIZE_0 | DMA_CCR2_PSIZE_0 | DMA_CCR2_TCIE;
+  
+  DMA1_Channel3->CPAR = (uint32_t)&SPI1->DR;
+  DMA1_Channel3->CMAR = (uint32_t)&buffDMA;
+  DMA1_Channel3->CNDTR = 0x00;
+  DMA1_Channel3->CCR |= DMA_CCR3_PL | DMA_CCR3_MSIZE_0 | DMA_CCR3_PSIZE_0 | DMA_CCR3_DIR;
+  
+  NVIC_SetPriority(DMA1_Channel2_IRQn, PRIORITY_GUI_UPDATE);
+  NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+  
+  GuiLoadImg(0x00, 0x00, 0x00);
+  
+  #if defined(DEBUG)
+    printf("< OK >    Initialization GUI\r\n");
+  #endif
 }

@@ -153,8 +153,12 @@ void Ds18b20Init(void){
   
   Ds18b20SearchROM();
   if(0x00 != ds18b20Device){
-  Ds18b20Reset();
-  Ds18b20SendByte(DS18B20_SKIP_ROM);
-  Ds18b20SendByte(DS18B20_CONVERT_TEMPERATURE);
+    Ds18b20Reset();
+    Ds18b20SendByte(DS18B20_SKIP_ROM);
+    Ds18b20SendByte(DS18B20_CONVERT_TEMPERATURE);
   }
+  
+  #if defined(DEBUG)
+    printf("< OK >    Initialization DS18B20\r\n");
+  #endif
 }

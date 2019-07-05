@@ -23,7 +23,7 @@ void HeatingPWM(void){ // 10Hz
         heatingValve[i].direction = -0x01;
         heatingValve[i].growCounter = 0x00; // обнуляем счетчик шансов на прогрев (перегрелись, куда еще :)
         heatingValve[i].hotAlarm++;
-        heatingValve[i].delay -= heating.stepDelay;  
+        heatingValve[i].delay -= heating.stepDelay;
       }
       // резкое падение нужно один раз замедлить
       if(heatingValve[i].coldAlarm < 0x01 && heatingValve[i].oldTemperature[0x02] > heatingValve[i].oldTemperature[0x01] &&
@@ -110,29 +110,29 @@ void HeatingPWM(void){ // 10Hz
       heatingValve[i].status = 0x00;
       switch(i){
         case 0x00: R1_CLOSED;
-        break;
+      break;
         case 0x01: R2_CLOSED;
-        break;
+      break;
         case 0x02: R3_CLOSED;
-        break;
+      break;
         case 0x03: R4_CLOSED;
-        break;
+      break;
         case 0x04: R5_CLOSED;
-        break;
+      break;
       }
     }else{
       heatingValve[i].status = 0x01;
       switch(i){
         case 0x00: R1_OPEN;
-        break;
+      break;
         case 0x01: R2_OPEN;
-        break;
+      break;
         case 0x02: R3_OPEN;
-        break;
+      break;
         case 0x03: R4_OPEN;
-        break;
+      break;
         case 0x04: R5_OPEN;
-        break;
+      break;
       }
     }
   }
@@ -146,4 +146,8 @@ void HeatingInit(void){
   GPIOE->CRL &= ~(GPIO_CRL_CNF1 | GPIO_CRL_CNF2 | GPIO_CRL_CNF3 | GPIO_CRL_CNF4 | GPIO_CRL_CNF5);
   GPIOE->CRL |=  (GPIO_CRL_MODE1 |GPIO_CRL_MODE2 | GPIO_CRL_MODE3 | GPIO_CRL_MODE4 | GPIO_CRL_MODE5);
   GPIOE->CRL |=  (GPIO_CRL_CNF1_0 | GPIO_CRL_CNF2_0 | GPIO_CRL_CNF3_0 | GPIO_CRL_CNF4_0 | GPIO_CRL_CNF5_0);
+  
+  #if defined(DEBUG)
+    printf("< OK >    Initialization HEATING\r\n");
+  #endif
 }

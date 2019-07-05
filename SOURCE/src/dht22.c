@@ -3,6 +3,49 @@
 struct Dht22InitTypeDef dht22;
 static uint16_t dht22Delay[0x04] = {0xC288, 0xFFFF, 0xFFFF, 0xFFFF};
 
+void TIM4_IRQHandler(void){
+  if(TIM4->SR & TIM_SR_CC1IF){
+   DMA1_Channel4->CCR &= ~DMA_CCR4_EN;
+   DMA1_Channel4->CMAR = (uint32_t)&dht22.dataBuff[0x00];
+   DMA1_Channel4->CNDTR = sizeof(dht22.dataBuff)/sizeof(*dht22.dataBuff);
+   DMA1_Channel4->CCR |= DMA_CCR4_EN;
+   TIM4->CCER |= TIM_CCER_CC2E;
+   TIM4->SR &= ~TIM_SR_CC1IF;
+  }
+}
+
+void DMA1_Channel4_IRQHandler(void){
+  uint64_t tData = 0x00;
+  uint8_t *tDataBuff = (uint8_t*)&tData;
+  uint8_t a;
+  uint32_t *b;
+  uint8_t tCRC = 0x00;
+  
+  if(DMA1->ISR & DMA_ISR_TCIF4){ // приняли данные от DHT22
+    TIM4->CCER &= ~TIM_CCER_CC2E;
+    b = BITBAND_RAMADR((uint32_t)&tData, 0x00);
+    for(a = 0x00; a < 0x28; a++)
+    if((dht22.dataBuff[a + 0x02] - dht22.dataBuff[a + 0x01]) > 0x0A) b[0x27 - a] = 0x01;
+      else b[0x27 - a] = 0x00;
+    tCRC = 0x00;
+    for(a = 0x04; a > 0x00; a--) tCRC = tCRC + tDataBuff[a]; // подсчет CRC
+    if(tCRC == tDataBuff[0x00]){
+      dht22.humidity = (uint16_t)(tData >> 0x18);
+      dht22.temperature = (uint16_t)(tData >> 0x08);
+      #if (defined (DEBUG) || defined(INFO))
+        printf("DHT22 Temper: %d.%d Hum: %d.%d\r\n", (dht22.temperature / 10), (dht22.temperature % 10), (dht22.humidity / 10), (dht22.humidity % 10));
+      #endif
+    }else{
+        #if defined(DEBUG)
+    printf("DHT22        ERROR\r\n");
+  #endif
+      dht22.humidity = 0xFFFF;
+      dht22.temperature = 0xFFFF;
+    }
+    DMA1->IFCR = DMA_IFCR_CTCIF4;
+  }
+}
+
 void Dht22Init(void){
   GPIOD->CRH |= GPIO_CRH_MODE12;
   GPIOD->CRH |= GPIO_CRH_CNF12;
@@ -39,44 +82,8 @@ void Dht22Init(void){
   
   NVIC_SetPriority(DMA1_Channel4_IRQn, PRIORITY_DHT22_DMA);
   NVIC_EnableIRQ(DMA1_Channel4_IRQn);
-}
-
-void TIM4_IRQHandler(void){
-  if(TIM4->SR & TIM_SR_CC1IF){
-   DMA1_Channel4->CCR &= ~DMA_CCR4_EN;
-   DMA1_Channel4->CMAR = (uint32_t)&dht22.dataBuff[0x00];
-   DMA1_Channel4->CNDTR = sizeof(dht22.dataBuff)/sizeof(*dht22.dataBuff);
-   DMA1_Channel4->CCR |= DMA_CCR4_EN;
-   TIM4->CCER |= TIM_CCER_CC2E;
-   TIM4->SR &= ~TIM_SR_CC1IF;
-  }
-}
-
-void DMA1_Channel4_IRQHandler(void){
-  uint64_t tData = 0x00;
-  uint8_t *tDataBuff = (uint8_t*)&tData;
-  uint8_t a;
-  uint32_t *b;
-  uint8_t tCRC = 0x00;
   
-  if(DMA1->ISR & DMA_ISR_TCIF4){ // приняли данные от DHT22
-    TIM4->CCER &= ~TIM_CCER_CC2E;
-    b = BITBAND_RAMADR((uint32_t)&tData, 0x00);
-    for(a = 0x00; a < 0x28; a++)
-    if((dht22.dataBuff[a + 0x02] - dht22.dataBuff[a + 0x01]) > 0x0A) b[0x27 - a] = 0x01;
-      else b[0x27 - a] = 0x00;
-    tCRC = 0x00;
-    for(a = 0x04; a > 0x00; a--) tCRC = tCRC + tDataBuff[a]; // подсчет CRC
-    if(tCRC == tDataBuff[0x00]){
-      dht22.humidity = (uint16_t)(tData >> 0x18);
-      dht22.temperature = (uint16_t)(tData >> 0x08);
-      #if (defined (DEBUG) || defined(INFO))
-        printf("DHT22 Temper: %d.%d Hum: %d.%d\r\n", (dht22.temperature / 10), (dht22.temperature % 10), (dht22.humidity / 10), (dht22.humidity % 10));
-      #endif
-    }else{
-      dht22.humidity = 0xFFFF;
-      dht22.temperature = 0xFFFF;
-    }
-    DMA1->IFCR = DMA_IFCR_CTCIF4;
-  }
+  #if defined(DEBUG)
+    printf("< OK >    Initialization DHT22\r\n");
+  #endif
 }

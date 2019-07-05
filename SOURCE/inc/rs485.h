@@ -24,9 +24,6 @@ struct Rs485InitTypeDef{
 extern struct Rs485InitTypeDef rs485;
 
 void Rs485Sends(uint8_t *str, uint8_t len);
-void Rs485ResetEnergy(void);
-void Rs485SetAlarm(void);
-void Rs485ReadPower(void);
 void Rs485Init(void);
 
 #endif /* _RS485_H */

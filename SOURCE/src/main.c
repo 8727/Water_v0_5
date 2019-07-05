@@ -16,7 +16,7 @@
 
 int main(void){
   #if defined(DEBUG)
-    printf("Start setting\n\r //********************************//\r\n");
+    printf(" Start setting\n\r//********************************//\r\n");
   #endif
   Setting();
   while(0x01){

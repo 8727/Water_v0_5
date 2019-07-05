@@ -26,7 +26,8 @@ struct Ds18b20InitTypeDef{
 extern struct Ds18b20InitTypeDef ds18b20[DS18B20_MAX_DEVICES];
 extern uint8_t ds18b20Device;
 
-void Ds18b20Init(void);
 void Ds18b20Read(void);
+void Ds18b20Init(void);
+
 
 #endif /* _DS18B20_H */

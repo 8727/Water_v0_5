@@ -3,25 +3,25 @@
 struct AdcInitTypeDef adc;
 
 void ADCAlarm(void){
-  if(settings.onOffSensor & 0x01){
+  if(settings.sensorOnOff & 0x01){
     if(adc.sensor1 > settings.alarmSensor1){
       settings.onAlarm |= 0x01;
       BlockWater();
     }
   }
-  if(settings.onOffSensor & 0x02){
+  if(settings.sensorOnOff & 0x02){
     if(adc.sensor2 > settings.alarmSensor2){
       settings.onAlarm |= 0x02;
       BlockWater();
     }
   }
-  if(settings.onOffSensor & 0x04){
+  if(settings.sensorOnOff & 0x04){
     if(adc.sensor3 > settings.alarmSensor3){
       settings.onAlarm |= 0x03;
       BlockWater();
     }
   }
-  if(settings.onOffSensor & 0x08){
+  if(settings.sensorOnOff & 0x08){
     if(adc.sensor4 > settings.alarmSensor4){
       settings.onAlarm |= 0x04;
       BlockWater();
@@ -116,4 +116,8 @@ void ADCInit(void){
   NVIC_EnableIRQ(ADC1_2_IRQn);
   
   ADC1->CR2 |= ADC_CR2_JSWSTART;        //запустить процес преобразования
+  
+  #if defined(DEBUG)
+    printf("< OK >    Initialization SENSORS\r\n");
+  #endif
 }

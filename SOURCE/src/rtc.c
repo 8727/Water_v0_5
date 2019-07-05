@@ -7,7 +7,7 @@ void RTC_IRQHandler(void){
   }
 }
 
-void RtcCounterToTime(uint32_t counter, RtcTypeDef* unixTim){
+void RtcSecondsToTime(uint32_t counter, RtcTypeDef* unixTim){
   uint32_t a, t;
   char b, c, d;
   t = counter % SEC_A_DAY;
@@ -28,7 +28,7 @@ void RtcCounterToTime(uint32_t counter, RtcTypeDef* unixTim){
   unixTim->sec = (t % 0x0E10) % 0x3C;
 }
 
-uint32_t RtcTimeToCounter(RtcTypeDef* unixTime){
+uint32_t RtcTimeToSeconds(RtcTypeDef* unixTime){
   uint8_t a, m;
   uint16_t y;
   a = ((0x0E - unixTime->month) / 0x0C);
@@ -38,11 +38,11 @@ uint32_t RtcTimeToCounter(RtcTypeDef* unixTime){
           SEC_A_DAY) + unixTime->sec + unixTime->min * 0x3C + unixTime->hour * 0x0E10;
 }
 
-uint32_t RtcGetCounter(void){
+uint32_t RtcGetSeconds(void){
   return (uint32_t)((RTC->CNTH << 0x10) | RTC->CNTL);
 }
 
-void RtcSetCounter(uint32_t counter){
+void RtcSetSeconds(uint32_t counter){
   PWR->CR |= PWR_CR_DBP;
   while(!(RTC->CRL & RTC_CRL_RTOFF));
   RTC->CRL |= RTC_CRL_CNF;
@@ -64,7 +64,7 @@ void RtcInit(void){
     RCC->BDCR |= RCC_BDCR_RTCSEL_LSE;
     RCC->BDCR |= RCC_BDCR_LSEON;
     while((RCC->BDCR & RCC_BDCR_LSEON) != RCC_BDCR_LSEON){}
-    BKP->RTCCR |= settings.rtcCalibration;
+    BKP->RTCCR |= settings.rtcCalib;
     while(!(RTC->CRL & RTC_CRL_RTOFF));
     RTC->CRL |= RTC_CRL_CNF;
     RTC->PRLL = 0x7FFF;
@@ -82,4 +82,8 @@ void RtcInit(void){
 //  RTC->CRH |= RTC_CRH_OWIE;
   NVIC_SetPriority(RTC_IRQn, PRIORITY_RTC);
   NVIC_EnableIRQ(RTC_IRQn);
+  
+  #if defined(DEBUG)
+    printf("< OK >    Initialization RTC\r\n");
+  #endif
 }

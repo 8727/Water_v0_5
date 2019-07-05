@@ -11,6 +11,9 @@
 #define INFO
 
 /* Define --------------------------------------------------------------------*/
+#define true    0x01
+#define false   0x00
+
 #if (defined (DEBUG) || defined(INFO))
   #define ITM_Port8(n)    (*((volatile unsigned char *)(0xE0000000+4*n)))
   #define ITM_Port16(n)   (*((volatile unsigned short*)(0xE0000000+4*n)))
@@ -46,8 +49,6 @@
 #define WHITE         0xFFFF      /* 255, 255, 255 */
 #define ORANGE        0xFD20      /* 255, 165,   0 */
 #define GREENYELLOW   0xAFE5      /* 173, 255,  47 */
-
-
 
 
 #endif /* __MAIN_H */

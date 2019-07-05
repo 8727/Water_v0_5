@@ -463,6 +463,11 @@
               <FilePath>..\SOURCE\src\dht22.c</FilePath>
             </File>
             <File>
+              <FileName>nrf24.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\nrf24.c</FilePath>
+            </File>
+            <File>
               <FileName>rs485.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SOURCE\src\rs485.c</FilePath>

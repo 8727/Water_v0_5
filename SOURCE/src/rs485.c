@@ -44,4 +44,8 @@ void Rs485Init(void){
   
   NVIC_SetPriority(USART1_IRQn, PRIORITY_RS485);
   NVIC_EnableIRQ(USART1_IRQn);
+  
+  #if defined(DEBUG)
+    printf("< OK >    Initialization RS485\r\n");
+  #endif
 }
