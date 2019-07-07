@@ -3,9 +3,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
-#include "string.h"
 #include "setting.h"
-
+#include <string.h>
 
 /* Define --------------------------------------------------------------------*/
 #define DS18B20_SEARCH                      0xF0 //команда поиска ROM

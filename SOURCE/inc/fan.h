@@ -11,7 +11,7 @@
 
 struct fanInitTypeDef{
   _Bool    job;
-  _Bool    status;
+  _Bool    jobHum;
   uint16_t jobTimer;
   uint16_t sensorTimer;
   uint16_t timer;

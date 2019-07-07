@@ -7,25 +7,25 @@ void RTC_IRQHandler(void){
   }
 }
 
-void RtcSecondsToTime(uint32_t counter, RtcTypeDef* unixTim){
+void RtcSecondsToTime(uint32_t counter, RtcTypeDef* unixTime){
   uint32_t a, t;
   char b, c, d;
   t = counter % SEC_A_DAY;
   a = ((counter + 0xA8C0) / (SEC_A_DAY >> 0x01)) + (0x00254D8B << 0x01) + 0x01;
   a >>= 0x01;
-  unixTim->wday = a % 0x07;
+  unixTime->wday = a % 0x07;
   a += 0x7D2C;
   b = (0x04 * a + 0x03) / 0x00023AB1;
   a = a - (0x00023AB1 * b) / 0x04;
   c = (0x04 * a + 0x03) / 0x05B5;
   a = a - (0x05B5 * c) / 0x04;
   d = (0x05 * a + 0x02) / 0x99;
-  unixTim->day = a - (0x99 * d + 0x02) / 0x05 + 0x01;
-  unixTim->month = d + 0x03 - 0x0C * (d / 0x0A);
-  unixTim->year = 0x64 * b + c - 0x12C0 + (d / 0x0A);
-  unixTim->hour = t / 0x0E10;
-  unixTim->min = (t % 0x0E10) / 0x3C;
-  unixTim->sec = (t % 0x0E10) % 0x3C;
+  unixTime->day = a - (0x99 * d + 0x02) / 0x05 + 0x01;
+  unixTime->month = d + 0x03 - 0x0C * (d / 0x0A);
+  unixTime->year = 0x64 * b + c - 0x12C0 + (d / 0x0A);
+  unixTime->hour = t / 0x0E10;
+  unixTime->min = (t % 0x0E10) / 0x3C;
+  unixTime->sec = (t % 0x0E10) % 0x3C;
 }
 
 uint32_t RtcTimeToSeconds(RtcTypeDef* unixTime){
@@ -84,6 +84,9 @@ void RtcInit(void){
   NVIC_EnableIRQ(RTC_IRQn);
   
   #if defined(DEBUG)
-    printf("< OK >    Initialization RTC\r\n");
+    RtcTypeDef date;
+    uint32_t t = RtcGetSeconds();
+    RtcSecondsToTime(t, &date);
+    printf("< OK >    Initialization RTC\r\nTime: %d \r\nTime: %d.%d.%d %d:%d:%d\r\n", t, date.day, date.month, date.year, date.hour, date.min, date.sec);
   #endif
 }

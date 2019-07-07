@@ -151,14 +151,18 @@ void Ds18b20Init(void){
   
   USART3->CR1 |= USART_CR1_UE;
   
+  #if defined(DEBUG)
+    printf("< OK >    Initialization DS18B20\r\n");
+  #endif
   Ds18b20SearchROM();
+  
   if(0x00 != ds18b20Device){
     Ds18b20Reset();
     Ds18b20SendByte(DS18B20_SKIP_ROM);
     Ds18b20SendByte(DS18B20_CONVERT_TEMPERATURE);
+  }else{
+    #if defined(DEBUG)
+      printf("<ERROR>    DS18B20 No sensors\r\n");
+    #endif
   }
-  
-  #if defined(DEBUG)
-    printf("< OK >    Initialization DS18B20\r\n");
-  #endif
 }

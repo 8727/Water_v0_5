@@ -63,7 +63,7 @@ void ReadConfig(void){
     
     buffEeprom[ADDR_LCD_ROTATION] = LCD_ROTATION;
     buffEeprom[ADDR_TIME_ZONE] = TIME_ZONE;
-    
+    //RF24L01
     buffEeprom[ADDR_RF24_SP_PW] = RF24_SP_PW;
     buffEeprom[ADDR_RF24_CH] = RF24_CH;
     WriteData32ToBuffer(ADDR_RF24_TX_ADR, RF24_TX_ADR, buffEeprom);
@@ -74,6 +74,8 @@ void ReadConfig(void){
     buffEeprom[ADDR_RF24_RX4_ADR] = RF24_RX4_ADR;
     buffEeprom[ADDR_RF24_RX5_ADR] = RF24_RX5_ADR;
 /*----------------------------------------------------------------------------*/
+    //ADC
+    buffEeprom[ADDR_SENSOR_ON_OFF] = SENSOR_ON_OFF;
     buffEeprom[ADDR_CALIB_SENSOR1] = CALIB_SENSOR1;
     buffEeprom[ADDR_CALIB_SENSOR2] = CALIB_SENSOR2;
     buffEeprom[ADDR_CALIB_SENSOR3] = CALIB_SENSOR3;
@@ -86,9 +88,10 @@ void ReadConfig(void){
     buffEeprom[ADDR_ALARM_SENSOR2] = ALARM_SENSOR2;
     buffEeprom[ADDR_ALARM_SENSOR3] = ALARM_SENSOR3;
     buffEeprom[ADDR_ALARM_SENSOR4] = ALARM_SENSOR4;
-    buffEeprom[ADDR_SENSOR_ON_OFF] = SENSOR_ON_OFF;
     
     buffEeprom[ADDR_CALIB_POWER_V] = CALIB_POWER_V;
+    //FAN
+    buffEeprom[ADDR_FAN_ON_OFF] = FAN_ON_OFF;
     WriteData16ToBuffer(ADDR_SENSOR_INTRV, SENSOR_INTRV, buffEeprom);
     WriteData16ToBuffer(ADDR_MAX_JOB, MAX_JOB, buffEeprom);
     WriteData16ToBuffer(ADDR_INTERVAL_HUM, INTERVAL_HUM, buffEeprom);
@@ -97,8 +100,20 @@ void ReadConfig(void){
     WriteData16ToBuffer(ADDR_MAX_HUM, MAX_HUM, buffEeprom);
     buffEeprom[ADDR_GIST_TEMPR] = GIST_TEMPR;
     buffEeprom[ADDR_GIST_HUM] = GIST_HUM;
-    
-    
+    //HEATING
+    buffEeprom[ADDR_HEAT_ON_OFF] = HEAT_ON_OFF;
+    buffEeprom[ADDR_HEAT_TEMPER_R1] = HEAT_TEMPER_R1;
+    buffEeprom[ADDR_HEAT_TEMPER_R2] = HEAT_TEMPER_R2;
+    buffEeprom[ADDR_HEAT_TEMPER_R3] = HEAT_TEMPER_R3;
+    buffEeprom[ADDR_HEAT_TEMPER_R4] = HEAT_TEMPER_R4;
+    buffEeprom[ADDR_HEAT_TEMPER_R5] = HEAT_TEMPER_R5;
+    WriteData16ToBuffer(ADDR_HEAT_JOB_DEFAULT_DELAY, HEAT_JOB_DEFAULT_DELAY, buffEeprom);
+    WriteData16ToBuffer(ADDR_HEAT_JOB_INTERVAL, HEAT_JOB_INTERVAL, buffEeprom);
+    WriteData16ToBuffer(ADDR_HEAT_SENSOR_INTERVAL, HEAT_SENSOR_INTERVAL, buffEeprom);
+    WriteData16ToBuffer(ADDR_HEAT_TOP_TEMPERATURE, HEAT_TOP_TEMPERATURE, buffEeprom);
+    buffEeprom[ADDR_HEAT_GIST_TEMPERATURE] = HEAT_GIST_TEMPERATURE;
+    buffEeprom[ADDR_HEAT_STEP_DELAY] = HEAT_STEP_DELAY;
+    buffEeprom[ADDR_HEAT_MAX_DELAY] = HEAT_MAX_DELAY;
     
     
     
@@ -125,7 +140,8 @@ void ReadConfig(void){
   }
   settings.canSpeed = ReadData32Buffer(ADDR_CAN_SPEED, buffEeprom);
   settings.rs485Speed = ReadData16Buffer(ADDR_RS485_SPEED, buffEeprom);
-  
+  settings.canDevice = (settings.type << 0x08) | (settings.number << 0x04);
+  //RF24L01
   settings.rf24SpeedPower = buffEeprom[ADDR_RF24_SP_PW];
   settings.rf24Ch = buffEeprom[ADDR_RF24_CH];
   settings.rf24Tx = ReadData32Buffer(ADDR_RF24_TX_ADR, buffEeprom);
@@ -134,7 +150,10 @@ void ReadConfig(void){
   settings.rf24Rx2 = buffEeprom[ADDR_RF24_RX2_ADR];
   settings.rf24Rx3 = buffEeprom[ADDR_RF24_RX3_ADR];
   settings.rf24Rx4 = buffEeprom[ADDR_RF24_RX4_ADR];
-  settings.rf24Rx5 = buffEeprom[ADDR_RF24_RX5_ADR];  
+  settings.rf24Rx5 = buffEeprom[ADDR_RF24_RX5_ADR];
+/*----------------------------------------------------------------------------*/
+  //ADC
+  settings.sensorOnOff = buffEeprom[ADDR_SENSOR_ON_OFF];
   settings.calibSensor1 = buffEeprom[ADDR_CALIB_SENSOR1];
   settings.calibSensor2 = buffEeprom[ADDR_CALIB_SENSOR2];
   settings.calibSensor3 = buffEeprom[ADDR_CALIB_SENSOR3];
@@ -147,9 +166,10 @@ void ReadConfig(void){
   settings.alarmSensor2 = buffEeprom[ADDR_ALARM_SENSOR2];
   settings.alarmSensor3 = buffEeprom[ADDR_ALARM_SENSOR3];
   settings.alarmSensor4 = buffEeprom[ADDR_ALARM_SENSOR4];
-  settings.sensorOnOff = buffEeprom[ADDR_SENSOR_ON_OFF];
   
   settings.calibPowerV = buffEeprom[ADDR_CALIB_POWER_V];
+  //FAN
+  settings.fanOnOff = buffEeprom[ADDR_FAN_ON_OFF];
   settings.fanSensorInterval = ReadData16Buffer(ADDR_SENSOR_INTRV, buffEeprom);
   settings.fanMaxJob = ReadData16Buffer(ADDR_MAX_JOB, buffEeprom);
   settings.fanIntervalHum = ReadData16Buffer(ADDR_INTERVAL_HUM, buffEeprom);
@@ -158,10 +178,23 @@ void ReadConfig(void){
   settings.fanMaxHumidity = ReadData16Buffer(ADDR_MAX_HUM, buffEeprom);
   settings.fanGistTemperature = buffEeprom[ADDR_GIST_TEMPR];
   settings.fanGistHumidity = buffEeprom[ADDR_GIST_HUM];
+  //HEATING
+  settings.heatOnOff = buffEeprom[ADDR_HEAT_ON_OFF];
+  heating[0x00].temperature = buffEeprom[ADDR_HEAT_TEMPER_R1];
+  heating[0x01].temperature = buffEeprom[ADDR_HEAT_TEMPER_R2];
+  heating[0x02].temperature = buffEeprom[ADDR_HEAT_TEMPER_R3];
+  heating[0x03].temperature = buffEeprom[ADDR_HEAT_TEMPER_R4];
+  heating[0x04].temperature = buffEeprom[ADDR_HEAT_TEMPER_R5];
+  settings.heatJobDefDelay = ReadData16Buffer(ADDR_HEAT_JOB_DEFAULT_DELAY, buffEeprom);
+  settings.heatJobInterval = ReadData16Buffer(ADDR_HEAT_JOB_INTERVAL, buffEeprom);
+  settings.heatSensorInterval = ReadData16Buffer(ADDR_HEAT_SENSOR_INTERVAL, buffEeprom);
+  settings.heatTopTemperature = ReadData16Buffer(ADDR_HEAT_TOP_TEMPERATURE, buffEeprom);
+  settings.heatGistTemperature = buffEeprom[ADDR_HEAT_GIST_TEMPERATURE];
+  settings.heatStepDelay = buffEeprom[ADDR_HEAT_STEP_DELAY];
+  settings.heatMaxDelay = buffEeprom[ADDR_HEAT_MAX_DELAY];
+
   
-  
-  
-  settings.canDevice = (settings.type << 0x08) | (settings.number << 0x04);
+
 /*----------------------------------------------------------------------------*/
   
   
@@ -170,14 +203,6 @@ void ReadConfig(void){
   
   
   
-  
-  heating.valveDefDelay = 100;   // 10sec * 10Hz
-  heating.valveInterval = 500;   // 50sec * 10Hz
-  heating.interval = 600;        // 60sec * 10Hz
-  heating.gistTemperature = 3;   // 0.3 * 10
-  heating.stepDelay = 2;         // 0.2sec * 10Hz
-  heating.topTemperature = 500;  // 50 * 10
-  heating.maxDelay = 200;        // 20sec * 10Hz
   
 /*----------------------------------------------------------------------------*/
   
@@ -204,12 +229,12 @@ void Timer10Hz(void){
   TIM6->DIER |= TIM_DIER_UIE;
   TIM6->CR1 = TIM_CR1_CEN | TIM_CR1_ARPE;
   
+  #if defined(DEBUG)
+    printf("< OK >    Start Timer 10Hz\r\n\n");
+  #endif
+  
   NVIC_SetPriority(TIM6_IRQn, PRIORITY_HEATING);
   NVIC_EnableIRQ(TIM6_IRQn);
-  
-  #if defined(DEBUG)
-    printf("< OK >    Start Timer 10Hz\r\n");
-  #endif
 }
 
 void Setting(void){
@@ -237,7 +262,6 @@ void Setting(void){
   FanInit();
   Ee24cxxInit();
   ReadConfig();
-  Timer10Hz();
   RtcInit();
   Ds18b20Init();
   Dht22Init();
@@ -247,6 +271,7 @@ void Setting(void){
   LcdInit();
   GuiInit();
   BeepInit();
+  Timer10Hz();
   
 //  W25QxxEraseBlocks();
 }
