@@ -46,9 +46,9 @@ void HeatingPWM(void){ // 10Hz
       // тогда остановим $freezeCounter, пока температура не выйдет за пределы
       if(heating[i].realTemperature < (heating[i].temperature - settings.heatGistTemperature)){ // если температура ниже заданной
         heating[i].growTimer++;
-          #if defined(DEBUG)
-            printf("HEATING growTimer %d - %d;  jobDelay %d\r\n", i, heating[i].growTimer, heating[i].jobDelay);
-          #endif
+//          #if defined(DEBUG)
+//            printf("HEATING growTimer %d - %d;  jobDelay %d\r\n", i, heating[i].growTimer, heating[i].jobDelay);
+//          #endif
         // таймер "сколько секунд подряд нужен рост". запускаем как только температура ниже уставки. обнуляем как дойдет до уставки или выше.
         // если (таймер > 10 x interval && delay < valveDefDelay) тогда delay = valveDefDelay  
         // для случаев когда после сильного падения delay (например, до нуля) замучаешься ждать роста

@@ -7,7 +7,7 @@
 
 
 /* Define --------------------------------------------------------------------*/
-#define SEC_A_DAY       0x00015180
+#define SEC_A_DAY   86400
 
 typedef struct{
   uint16_t year;    /* 1970..2106 */
@@ -19,11 +19,11 @@ typedef struct{
   uint8_t  sec;     /* 0..59 */
 }RtcTypeDef;
 
-
-void RtcSecondsToTime (uint32_t counter, RtcTypeDef* unixTime);
+void RtcTimeStamp(void);
+void RtcSecondsToTime (uint32_t seconds, RtcTypeDef* unixTime);
 uint32_t RtcTimeToSeconds(RtcTypeDef* unixTime);
 uint32_t RtcGetSeconds(void);
-void RtcSetSeconds(uint32_t count);
+void RtcSetSeconds(uint32_t seconds);
 void RtcInit(void);
 
 #endif /* _RTC_H */
