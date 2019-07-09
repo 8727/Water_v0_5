@@ -15,6 +15,7 @@
 #include "dht22.h"
 #include "nrf24.h"
 #include "rs485.h"
+#include "can.h"
 #include "w25qxx.h"
 #include "ili9488.h"
 #include "beep.h"

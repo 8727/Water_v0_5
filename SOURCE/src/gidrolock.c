@@ -19,7 +19,6 @@ void GidrolockInit(void){
   GPIOE->CRL = (GPIOE->CRL & (~(GPIO_CRL_MODE0 | GPIO_CRL_CNF0))) | (GPIO_CRL_MODE0 | GPIO_CRL_CNF0_0); // M6
   
   #if defined(DEBUG)
-    if(info){ printf("<ERROR>"); }else{ printf("< OK >"); }
-    printf("    Initialization CRANES\r\n");
+    printf("< OK >    Initialization CRANES\r\n");
   #endif
 }

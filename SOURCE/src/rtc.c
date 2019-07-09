@@ -4,16 +4,18 @@ void RTC_IRQHandler(void){
   if(RTC->CRL & RTC_CRL_SECF){
     RTC->CRL &= ~RTC_CRL_SECF;
     if(0x00 != ds18b20Device) Ds18b20Read();
-      #if defined(DEBUG)
+    
+    #if defined(DEBUG)
       RtcTimeStamp();
-  #endif
+      printf("\r\n");
+    #endif
   }
 }
 
 void RtcTimeStamp(void){
   RtcTypeDef date;
   RtcSecondsToTime(RtcGetSeconds(), &date);
-  printf("Time: %d.%d.%d %d:%02d:%02d\r\n", date.day, date.month, date.year, date.hour, date.min, date.sec);
+  printf("\t%d.%d.%d %d:%02d:%02d\t", date.day, date.month, date.year, date.hour, date.min, date.sec);
 }
 
 void RtcSecondsToTime(uint32_t seconds, RtcTypeDef* unixTime){
@@ -93,7 +95,8 @@ void RtcInit(void){
   NVIC_EnableIRQ(RTC_IRQn);
   
   #if defined(DEBUG)
-    printf("< OK >    Initialization RTC \t");
+    printf("< OK >    Initialization RTC");
     RtcTimeStamp();
+    printf("\r\n");
   #endif
 }

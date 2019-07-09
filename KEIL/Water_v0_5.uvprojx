@@ -418,14 +418,14 @@
               <FilePath>..\SOURCE\src\setting.c</FilePath>
             </File>
             <File>
+              <FileName>Ee24cxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\Ee24cxx.c</FilePath>
+            </File>
+            <File>
               <FileName>in.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SOURCE\src\in.c</FilePath>
-            </File>
-            <File>
-              <FileName>adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SOURCE\src\adc.c</FilePath>
             </File>
             <File>
               <FileName>gidrolock.c</FileName>
@@ -443,34 +443,9 @@
               <FilePath>..\SOURCE\src\fan.c</FilePath>
             </File>
             <File>
-              <FileName>Ee24cxx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SOURCE\src\Ee24cxx.c</FilePath>
-            </File>
-            <File>
               <FileName>rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SOURCE\src\rtc.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds18b20.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SOURCE\src\ds18b20.c</FilePath>
-            </File>
-            <File>
-              <FileName>dht22.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SOURCE\src\dht22.c</FilePath>
-            </File>
-            <File>
-              <FileName>nrf24.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SOURCE\src\nrf24.c</FilePath>
-            </File>
-            <File>
-              <FileName>rs485.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SOURCE\src\rs485.c</FilePath>
             </File>
             <File>
               <FileName>w25qxx.c</FileName>
@@ -486,6 +461,36 @@
               <FileName>gui.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SOURCE\src\gui.c</FilePath>
+            </File>
+            <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds18b20.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\ds18b20.c</FilePath>
+            </File>
+            <File>
+              <FileName>dht22.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\dht22.c</FilePath>
+            </File>
+            <File>
+              <FileName>can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\can.c</FilePath>
+            </File>
+            <File>
+              <FileName>rs485.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\rs485.c</FilePath>
+            </File>
+            <File>
+              <FileName>nrf24.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOURCE\src\nrf24.c</FilePath>
             </File>
             <File>
               <FileName>beep.c</FileName>

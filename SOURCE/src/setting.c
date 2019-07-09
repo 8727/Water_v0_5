@@ -255,21 +255,22 @@ void Setting(void){
   RCC->APB2ENR |= RCC_APB2ENR_IOPFEN;
   RCC->APB2ENR |= RCC_APB2ENR_IOPGEN;
   
+  Ee24cxxInit();
+  ReadConfig();
   InInit(); 
-  ADCInit();
   GidrolockInit();
   HeatingInit();
   FanInit();
-  Ee24cxxInit();
-  ReadConfig();
   RtcInit();
-  Ds18b20Init();
-  Dht22Init();
-  Nrf24Init();
-  Rs485Init();
   W25QxxInit();
   LcdInit();
   GuiInit();
+  ADCInit();
+  Ds18b20Init();
+  Dht22Init();
+  CanInit();
+  Rs485Init();
+  Nrf24Init();
   BeepInit();
   Timer10Hz();
   
