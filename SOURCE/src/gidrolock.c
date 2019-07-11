@@ -18,7 +18,7 @@ void GidrolockInit(void){
   GPIOB->CRH = (GPIOB->CRH & (~(GPIO_CRH_MODE9 | GPIO_CRH_CNF9))) | (GPIO_CRH_MODE9 | GPIO_CRH_CNF9_0); // M5
   GPIOE->CRL = (GPIOE->CRL & (~(GPIO_CRL_MODE0 | GPIO_CRL_CNF0))) | (GPIO_CRL_MODE0 | GPIO_CRL_CNF0_0); // M6
   
-  #if defined(DEBUG)
+  #if defined DEBUG_GIDROLOCK
     printf("< OK >    Initialization CRANES\r\n");
   #endif
 }

@@ -117,7 +117,7 @@ void ADCInit(void){
   
   ADC1->CR2 |= ADC_CR2_JSWSTART;        //запустить процес преобразования
   
-  #if defined(DEBUG)
+  #if defined DEBUG_ADC
     printf("< OK >    Initialization SENSORS\r\n");
   #endif
 }

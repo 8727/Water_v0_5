@@ -5,7 +5,7 @@ void RTC_IRQHandler(void){
     RTC->CRL &= ~RTC_CRL_SECF;
     if(0x00 != ds18b20Device) Ds18b20Read();
     
-    #if defined(DEBUG)
+    #if defined DEBUG_RTC
       RtcTimeStamp();
       printf("\r\n");
     #endif
@@ -94,7 +94,7 @@ void RtcInit(void){
   NVIC_SetPriority(RTC_IRQn, PRIORITY_RTC);
   NVIC_EnableIRQ(RTC_IRQn);
   
-  #if defined(DEBUG)
+  #if defined DEBUG_RTC
     printf("< OK >    Initialization RTC");
     RtcTimeStamp();
     printf("\r\n");

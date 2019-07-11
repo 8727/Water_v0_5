@@ -121,7 +121,7 @@ void LcdInit(void){
   
   GuiFullWindow(BLACK);
   
-  #if defined(DEBUG)
+  #if defined DEBUG_LCD
     printf("< OK >    Initialization LCD\r\n");
   #endif
 }

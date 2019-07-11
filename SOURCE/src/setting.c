@@ -3,16 +3,11 @@
 struct settingsInitTypeDef settings;
 static __IO uint32_t msTicks;
 
-void SysTick_Handler(void){
-  msTicks++;
-}
+void SysTick_Handler(void){ msTicks++; }
 
-uint32_t GetTick(void){
-  return msTicks;
-}
+uint32_t GetTick(void){ return msTicks; }
 
-void DelayMs(uint32_t ms){
-  uint32_t tickstart = GetTick();
+void DelayMs(uint32_t ms){ uint32_t tickstart = GetTick();
   while((GetTick() - tickstart) < ms){}
 }
 
@@ -43,6 +38,9 @@ uint16_t ReadData16Buffer(uint8_t addr, uint8_t* buff){
 }
 
 void ReadConfig(void){
+  #if defined DEBUG_SETTING
+    printf("< OK >    Read configuration\r\n");
+  #endif
   uint8_t buffEeprom[EEPROM_BUFF];
   Ee24cxxRead(buffEeprom);
   if(0xFF != buffEeprom[ADDR_STATUS]){
@@ -114,12 +112,20 @@ void ReadConfig(void){
     buffEeprom[ADDR_HEAT_GIST_TEMPERATURE] = HEAT_GIST_TEMPERATURE;
     buffEeprom[ADDR_HEAT_STEP_DELAY] = HEAT_STEP_DELAY;
     buffEeprom[ADDR_HEAT_MAX_DELAY] = HEAT_MAX_DELAY;
-    
-    
-    
+    //WATER
+    WriteData32ToBuffer(ADDR_WATER_HOT_COUNTER, WATER_HOT_COUNTER, buffEeprom);
+    WriteData32ToBuffer(ADDR_WATER_COLD_COUNTER, WATER_COLD_COUNTER, buffEeprom);
+    WriteData16ToBuffer(ADDR_WATER_CALIB_HOT, WATER_CALIB_HOT, buffEeprom);
+    WriteData16ToBuffer(ADDR_WATER_CALIB_COLD, WATER_CALIB_COLD, buffEeprom);
+    WriteData16ToBuffer(ADDR_WATER_CALIB_OUT_HOT, WATER_CALIB_OUT_HOT, buffEeprom);
+    WriteData16ToBuffer(ADDR_WATER_CALIB_OUT_COLD, WATER_CALIB_OUT_COLD, buffEeprom);
     
 /*----------------------------------------------------------------------------*/
     Ee24cxxWrite(buffEeprom);
+    
+    #if defined DEBUG_SETTING
+      printf("          Default configuration\r\n");
+    #endif
   }
   settings.dateBuild = ReadData32Buffer(ADDR_DATE_BUILD, buffEeprom);
   settings.number = buffEeprom[ADDR_DEVICE_NUMBER];
@@ -192,10 +198,13 @@ void ReadConfig(void){
   settings.heatGistTemperature = buffEeprom[ADDR_HEAT_GIST_TEMPERATURE];
   settings.heatStepDelay = buffEeprom[ADDR_HEAT_STEP_DELAY];
   settings.heatMaxDelay = buffEeprom[ADDR_HEAT_MAX_DELAY];
-
-  
-
-/*----------------------------------------------------------------------------*/
+  //WATER
+  water.hotCounter = ReadData32Buffer(ADDR_WATER_HOT_COUNTER, buffEeprom);
+  water.coldCounter = ReadData32Buffer(ADDR_WATER_COLD_COUNTER, buffEeprom);
+  water.calibHot = ReadData16Buffer(ADDR_WATER_CALIB_HOT, buffEeprom);
+  water.calibCold = ReadData16Buffer(ADDR_WATER_CALIB_COLD, buffEeprom);
+  water.calibOutHot = ReadData16Buffer(ADDR_WATER_CALIB_OUT_HOT, buffEeprom);
+  water.calibOutCold = ReadData16Buffer(ADDR_WATER_CALIB_OUT_COLD, buffEeprom);
   
   
   
@@ -208,10 +217,6 @@ void ReadConfig(void){
   
   dht22.humidity = 0xFFFF;
   dht22.temperature = 0xFFFF;
-  
-  #if defined(DEBUG)
-    printf("< OK >    Read configuration\r\n");
-  #endif
 }
 
 void TIM6_IRQHandler(void){
@@ -229,7 +234,7 @@ void Timer10Hz(void){
   TIM6->DIER |= TIM_DIER_UIE;
   TIM6->CR1 = TIM_CR1_CEN | TIM_CR1_ARPE;
   
-  #if defined(DEBUG)
+  #if defined DEBUG_SETTING
     printf("< OK >    Start Timer 10Hz\r\n\n");
   #endif
   
@@ -238,6 +243,9 @@ void Timer10Hz(void){
 }
 
 void Setting(void){
+  #if defined DEBUG_SETTING
+    printf("\t\tStart setting\n\r\n");
+  #endif
   SysTick_Config(SystemCoreClock / 1000);   //1ms
   
   RCC->APB1ENR |= RCC_APB1ENR_PWREN;
@@ -273,6 +281,9 @@ void Setting(void){
   Nrf24Init();
   BeepInit();
   Timer10Hz();
+  #if defined DEBUG_SETTING
+    printf("\t\tStop setting\n\r\n");
+  #endif
   
 //  W25QxxEraseBlocks();
 }

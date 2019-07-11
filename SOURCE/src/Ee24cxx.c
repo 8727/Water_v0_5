@@ -72,7 +72,7 @@ void Ee24cxxInit(void){
   I2C1->CCR |= 0x0022;
   I2C1->CR1 |= I2C_CR1_PE;
   
-  #if defined(DEBUG)
+  #if defined DEBUG_EE24CXX
     printf("< OK >    Initialization EE24Cxx\r\n");
   #endif
 }

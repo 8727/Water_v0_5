@@ -110,7 +110,7 @@ void Ds18b20SearchROM(void){
   for(i = 0x00; i < DS18B20_MAX_DEVICES; i++){
     if(Ds18b20Search(rom)){
       memcpy (ds18b20[i].deviceID, rom,sizeof(rom));
-      #if (defined (DEBUG) || defined(INFO))
+      #if (defined (DEBUG_DS18B20) || defined(INFO))
         printf("Sensor < %d > ID : %02X %02X %02X %02X %02X %02X %02X %02X\r\n",
         i ,rom[0x00], rom[0x01], rom[0x02], rom[0x03], rom[0x04], rom[0x05], rom[0x06], rom[0x07]);
       #endif
@@ -128,7 +128,7 @@ void Ds18b20Read(void){
     temp = (Ds18b20ReadByte() << 0x08) | Ds18b20ReadByte();
     ds18b20[i].temperature = ((temp & 0x0FFF) >> 0x04);
     ds18b20[i].fraction = ((temp & 0x000F) * 0.625);
-    #if (defined (DEBUG) || defined(INFO))
+    #if (defined (DEBUG_DS18B20) || defined(INFO))
       printf("Sensor < %d > ID : %02X %02X %02X %02X %02X %02X %02X %02X Temper: %d.%02d\r\n",
       i ,ds18b20[i].deviceID[0x00], ds18b20[i].deviceID[0x01], ds18b20[i].deviceID[0x02], ds18b20[i].deviceID[0x03],
       ds18b20[i].deviceID[0x04], ds18b20[i].deviceID[0x05], ds18b20[i].deviceID[0x06], ds18b20[i].deviceID[0x07],
@@ -151,7 +151,7 @@ void Ds18b20Init(void){
   
   USART3->CR1 |= USART_CR1_UE;
   
-  #if defined(DEBUG)
+  #if defined DEBUG_DS18B20
     printf("< OK >    Initialization DS18B20\r\n");
   #endif
   Ds18b20SearchROM();
@@ -161,7 +161,7 @@ void Ds18b20Init(void){
     Ds18b20SendByte(DS18B20_SKIP_ROM);
     Ds18b20SendByte(DS18B20_CONVERT_TEMPERATURE);
   }else{
-    #if defined(DEBUG)
+    #if defined DEBUG_DS18B20
       printf("<ERROR>    DS18B20 No sensors\r\n");
     #endif
   }

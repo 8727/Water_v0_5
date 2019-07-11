@@ -30,7 +30,7 @@ void FanInit(void){
   FAN_OFF;
   GPIOE->CRL = (GPIOE->CRL & (~(GPIO_CRL_MODE6 | GPIO_CRL_CNF6))) | (GPIO_CRL_MODE6 | GPIO_CRL_CNF6_0); // FAN
   
-  #if defined(DEBUG)
+  #if defined DEBUG_FAN
     printf("< OK >    Initialization FAN\r\n");
   #endif
 }

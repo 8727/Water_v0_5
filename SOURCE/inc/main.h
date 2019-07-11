@@ -7,21 +7,33 @@
 
 #include "setting.h"
 /* Define --------------------------------------------------------------------*/
-#define DEBUG
-#define INFO
+//#define INFO
+#define DEBUG_SETTING
+#define DEBUG_EE24CXX
+#define DEBUG_IN
+#define DEBUG_GIDROLOCK
+#define DEBUG_HEATING
+#define DEBUG_FAN
+#define DEBUG_RTC
+#define DEBUG_W25QXX
+#define DEBUG_LCD
+#define DEBUG_GUI
+#define DEBUG_ADC
+#define DEBUG_DS18B20
+#define DEBUG_DHT22
+#define DEBUG_CAN
+#define DEBUG_RS485
+#define DEBUG_NRF24
+#define DEBUG_BEEP
 
 /* Define --------------------------------------------------------------------*/
 #define true    0x01
 #define false   0x00
 
-#if (defined (DEBUG) || defined(INFO))
-  #define ITM_Port8(n)    (*((volatile unsigned char *)(0xE0000000+4*n)))
-  #define ITM_Port16(n)   (*((volatile unsigned short*)(0xE0000000+4*n)))
-  #define ITM_Port32(n)   (*((volatile unsigned long *)(0xE0000000+4*n)))
-
-  #define DEMCR           (*((volatile unsigned long *)(0xE000EDFC)))
-  #define TRCENA          0x01000000
-#endif
+#define ITM_Port8(n)    (*((volatile unsigned char *)(0xE0000000+4*n)))
+#define ITM_Port32(n)   (*((volatile unsigned long *)(0xE0000000+4*n)))
+#define DEMCR           (*((volatile unsigned long *)(0xE000EDFC)))
+#define TRCENA          0x01000000
 
 #define BUILD_YEAR (__DATE__[7] == '?' ? 1900 : (((__DATE__[7] - '0') * 1000 ) + (__DATE__[8] - '0') * 100 + (__DATE__[9] - '0') * 10 + __DATE__[10] - '0'))
 #define BUILD_MONTH (__DATE__ [2] == '?' ? 1 : __DATE__ [2] == 'n' ? (__DATE__ [1] == 'a' ? 1 : 6) : __DATE__ [2] == 'b' ? 2 : __DATE__ [2] == 'r' ? (__DATE__ [0] == 'M' ? 3 : 4) \

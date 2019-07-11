@@ -159,7 +159,7 @@ void CanInit(void){
   NVIC_EnableIRQ(CAN1_RX1_IRQn);
   NVIC_EnableIRQ(CAN1_SCE_IRQn);
   
-    #if defined(DEBUG)
+  #if defined DEBUG_CAN
     printf("< OK >    Initialization CAN\r\n");
   #endif
 }

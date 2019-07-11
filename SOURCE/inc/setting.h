@@ -80,6 +80,13 @@
 #define HEAT_STEP_DELAY                  0x02   // 0.2sec * 10Hz
 #define HEAT_MAX_DELAY                   0xC8   // 20sec * 10Hz
 
+#define WATER_HOT_COUNTER                0x00000000
+#define WATER_COLD_COUNTER               0x00000000
+#define WATER_CALIB_HOT                  0x0000
+#define WATER_CALIB_COLD                 0x0000
+#define WATER_CALIB_OUT_HOT              0x0000
+#define WATER_CALIB_OUT_COLD             0x0000
+
 
 //#define HEATING_MAX_DEVICES              0x05
 //#define DS18B20_MAX_DEVICES              0x08
@@ -179,6 +186,12 @@
 #define ADDR_HEAT_GIST_TEMPERATURE       0x5D
 #define ADDR_HEAT_STEP_DELAY             0x5E
 #define ADDR_HEAT_MAX_DELAY              0x5F
+#define ADDR_WATER_HOT_COUNTER           0x60 // 0x60-0x63
+#define ADDR_WATER_COLD_COUNTER          0x64 // 0x64-0x67
+#define ADDR_WATER_CALIB_HOT             0x68 // 0x68-0x69
+#define ADDR_WATER_CALIB_COLD            0x6A // 0x6A-0x6B
+#define ADDR_WATER_CALIB_OUT_HOT         0x6C // 0x6C-0x6D
+#define ADDR_WATER_CALIB_OUT_COLD        0x6E // 0x6E-0x6F
 
 /* Define --------------------------------------------------------------------*/
 #define PRIORITY_DHT22_DMA               0x0F

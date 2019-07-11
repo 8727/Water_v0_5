@@ -32,11 +32,11 @@ void DMA1_Channel4_IRQHandler(void){
     if(tCRC == tDataBuff[0x00]){
       dht22.humidity = (uint16_t)(tData >> 0x18);
       dht22.temperature = (uint16_t)(tData >> 0x08);
-      #if (defined (DEBUG) || defined(INFO))
+      #if (defined (DEBUG_DHT22) || defined(INFO))
         printf("DHT22 Temper: %d.%d Hum: %d.%d\r\n", (dht22.temperature / 10), (dht22.temperature % 10), (dht22.humidity / 10), (dht22.humidity % 10));
       #endif
     }else{
-        #if defined(DEBUG)
+        #if defined(DEBUG_DHT22)
     printf("DHT22        ERROR\r\n");
   #endif
       dht22.humidity = 0xFFFF;
@@ -83,7 +83,7 @@ void Dht22Init(void){
   NVIC_SetPriority(DMA1_Channel4_IRQn, PRIORITY_DHT22_DMA);
   NVIC_EnableIRQ(DMA1_Channel4_IRQn);
   
-  #if defined(DEBUG)
+  #if defined DEBUG_DHT22
     printf("< OK >    Initialization DHT22\r\n");
   #endif
 }

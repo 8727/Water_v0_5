@@ -46,7 +46,7 @@ void HeatingPWM(void){ // 10Hz
       // тогда остановим $freezeCounter, пока температура не выйдет за пределы
       if(heating[i].realTemperature < (heating[i].temperature - settings.heatGistTemperature)){ // если температура ниже заданной
         heating[i].growTimer++;
-//          #if defined(DEBUG)
+//          #if defined DEBUG_HEATING
 //            printf("HEATING growTimer %d - %d;  jobDelay %d\r\n", i, heating[i].growTimer, heating[i].jobDelay);
 //          #endif
         // таймер "сколько секунд подряд нужен рост". запускаем как только температура ниже уставки. обнуляем как дойдет до уставки или выше.
@@ -152,7 +152,7 @@ void HeatingInit(void){
   GPIOE->CRL |=  (GPIO_CRL_MODE1 |GPIO_CRL_MODE2 | GPIO_CRL_MODE3 | GPIO_CRL_MODE4 | GPIO_CRL_MODE5);
   GPIOE->CRL |=  (GPIO_CRL_CNF1_0 | GPIO_CRL_CNF2_0 | GPIO_CRL_CNF3_0 | GPIO_CRL_CNF4_0 | GPIO_CRL_CNF5_0);
   
-  #if defined(DEBUG)
+  #if defined DEBUG_HEATING
     printf("< OK >    Initialization HEATING\r\n");
   #endif
 }

@@ -161,7 +161,7 @@ void GuiInit(void){
   
   GuiLoadImg(0x00, 0x00, 0x00);
   
-  #if defined(DEBUG)
+  #if defined DEBUG_GUI
     printf("< OK >    Initialization GUI\r\n");
   #endif
 }

@@ -2,7 +2,7 @@
 
 void Nrf24Init(void){
   
-  #if defined(DEBUG)
+  #if defined DEBUG_NRF24
     printf("< OK >    Initialization nRF24\r\n");
   #endif
 }

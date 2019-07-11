@@ -5,7 +5,7 @@ void BeepInit(void){
   GPIOC->CRH |= GPIO_CRH_MODE13;
   GPIOC->CRH &= ~(GPIO_CRH_CNF13);
   
-  #if defined(DEBUG)
+  #if defined DEBUG_BEEP
     printf("< OK >    Initialization BEEP\r\n");
   #endif
 }

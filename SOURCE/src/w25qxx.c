@@ -15,7 +15,7 @@ void W25QxxWriteWaitEnd(void){
   W25QxxWriteRead(CMD_R_STATUS_1);
   do{
     status = W25QxxWriteRead(0x00);
-    #if (defined (DEBUG) || defined(INFO))
+    #if defined DEBUG_W25QXX
       printf("EEPROM Wait...\r\n");
     #endif
   }while((status & 0x01) == 0x01);
@@ -157,10 +157,10 @@ void W25QxxInit(void){
     break;
   }
   
-  #if defined(DEBUG)
+  #if defined DEBUG_W25QXX
     printf("< OK >    Initialization W25Qxx\r\n");
   #endif
-  #if (defined (DEBUG) || defined(INFO))
+  #if defined DEBUG_W25QXX
     printf("< OK >    EEPROM : %s\r\n", w25qxx.name);
   #endif
   W25QxxReadTable();
