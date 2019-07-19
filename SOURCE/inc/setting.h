@@ -25,7 +25,7 @@
 #define SW_BUILD                         "1.00"      // "1.00" 0x312E3033
 #define STATUS                           'D'         // 0x44 -default "D", 
 #define DEVICE_NUMBER                    0x00        // Device number
-#define DEVICE_TYPE                      0x05        // Device type  0x07 = Core, 0x06 = Water, 0x05 = Power/Timer start,0x04 = SW
+#define DEVICE_TYPE                      0x06        // Device type  0x07 = Core, 0x06 = Water, 0x05 = Power/Timer start,0x04 = SW
 #define RTC_CALIBRATION                  0x00        // RTC CalibrationPpm
 #define LCD_ROTATION                     0x09        // 0x27 Rotation_270, 0x18 Rotation_180, 0x09 Rotation_90, 0x00 Rotation_0
 #define TIME_ZONE                        0x00        //
@@ -86,6 +86,7 @@
 #define WATER_CALIB_COLD                 0x0000
 #define WATER_CALIB_OUT_HOT              0x0000
 #define WATER_CALIB_OUT_COLD             0x0000
+#define WATER_LITERS                     0x0A
 
 
 //#define HEATING_MAX_DEVICES              0x05

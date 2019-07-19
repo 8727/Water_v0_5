@@ -220,10 +220,11 @@ void ReadConfig(void){
 }
 
 void TIM6_IRQHandler(void){
-  TIM6->SR &= ~TIM_SR_UIF;
   HeatingPWM();
   FanAnalyze();
   ADCAlarm();
+  InUpdate10Hz();
+  TIM6->SR &= ~TIM_SR_UIF;
 }
 
 void Timer10Hz(void){  

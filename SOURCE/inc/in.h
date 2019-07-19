@@ -16,9 +16,20 @@ struct WaterInitTypeDef{
   uint16_t calibOutHot;
   uint16_t calibOutCold;
 };
+struct InInitTypeDef{
+  _Bool hot;
+  _Bool cold;
+  _Bool open;
+  _Bool closed;
+  _Bool wait;
+  _Bool det;
+};
 
 extern struct WaterInitTypeDef water;
+extern struct InInitTypeDef in;
 
+void InCounterWater(void);
+void InUpdate10Hz(void);
 void InInit(void);
 
 #endif /* _FAN_H */
