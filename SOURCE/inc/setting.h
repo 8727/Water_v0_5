@@ -23,22 +23,19 @@
 /* Define --------------------------------------------------------------------*/
 #define HW_BUILD                         "0.05"      // "0.04" 0x302E3035
 #define SW_BUILD                         "1.00"      // "1.00" 0x312E3033
-#define STATUS                           'D'         // 0x44 -default "D", 
-#define DEVICE_NUMBER                    0x00        // Device number
+#define STATUS                           'D'         // 0x44 -default "D",
 #define DEVICE_TYPE                      0x06        // Device type  0x07 = Core, 0x06 = Water, 0x05 = Power/Timer start,0x04 = SW
+#define DEVICE_NUMBER                    0x00        // Device number
 #define RTC_CALIBRATION                  0x00        // RTC CalibrationPpm
 #define LCD_ROTATION                     0x09        // 0x27 Rotation_270, 0x18 Rotation_180, 0x09 Rotation_90, 0x00 Rotation_0
 #define TIME_ZONE                        0x00        //
 
-#define RF24_SP_PW                       0X00
-#define RF24_CH                          0X20
-#define RF24_TX_ADR                      0x7E7E7E7E  //
-#define RF24_RX0_ADR                     0x7E7E7E7E  //
-#define RF24_RX1_ADR                     0x2C2C2C2C  //
-#define RF24_RX2_ADR                     0x3C        //
-#define RF24_RX3_ADR                     0x4C        //
-#define RF24_RX4_ADR                     0x5C        //
-#define RF24_RX5_ADR                     0x6C        //
+#define RF24_ADDR                        0x8727      //
+#define RF24_PRIM                        0x70
+#define RF24_SECON                       0x71
+#define RF24_SPEED                       0x01        // 0x00  1Mbps, 0x01  2Mbps, 0x10 250kbps
+#define RF24_POWER                       0x03        // 0x00 -18dBm, 0x01 -12dBm, 0x02 -6dBm, 0x03 0dBm
+#define RF24_CH                          0x70        // 0-125 0x00-0x7D
 
 #define SENSOR_ON_OFF                    0x0F
 #define CALIB_SENSOR1                    0x00
@@ -139,16 +136,23 @@
 #define ADDR_LCD_ROTATION                0x09
 #define ADDR_CAN_SPEED                   0x0A // 0x0A-0x0D
 #define ADDR_RS485_SPEED                 0x0E // 0x0E-0x0F
-#define ADDR________X                    0x10 // 0x10-0x1D
-#define ADDR_RF24_SP_PW                  0x1E
-#define ADDR_RF24_CH                     0x1F
-#define ADDR_RF24_TX_ADR                 0x20 // 0x20-0x23
-#define ADDR_RF24_RX0_ADR                0x24 // 0x24-0x27
-#define ADDR_RF24_RX1_ADR                0x28 // 0x28-0x2B
-#define ADDR_RF24_RX2_ADR                0x2C
-#define ADDR_RF24_RX3_ADR                0x2D
-#define ADDR_RF24_RX4_ADR                0x2E
-#define ADDR_RF24_RX5_ADR                0x2F
+#define ADDR_RF24_ADDR                   0x10 // 0x10-0x11
+#define ADDR_RF24_PRIM                   0x12
+#define ADDR_RF24_SECON                  0x13
+#define ADDR_RF24_SPEED                  0x14
+#define ADDR_RF24_POWER                  0x15
+#define ADDR_RF24_CH                     0x16
+#define ADDR_RF24_TYPE_ON                0x17
+#define ADDR_RF24_TYPE_SEND_1            0x18
+#define ADDR_RF24_TYPE_ADDR_1            0x19
+#define ADDR_RF24_TYPE_SEND_2            0x1A
+#define ADDR_RF24_TYPE_ADDR_2            0x1B
+#define ADDR_RF24_TYPE_SEND_3            0x1C
+#define ADDR_RF24_TYPE_ADDR_3            0x1D
+#define ADDR_RF24_TYPE_SEND_4            0x1E
+#define ADDR_RF24_TYPE_ADDR_4            0x1F
+#define ADDR_________X                   0x20 // 0x20-0x2F
+
 /* Define --------------------------------------------------------------------*/
 #define ADDR_SENSOR_ON_OFF               0x30
 #define ADDR_CALIB_SENSOR1               0x31
@@ -163,7 +167,7 @@
 #define ADDR_ALARM_SENSOR2               0x3A
 #define ADDR_ALARM_SENSOR3               0x3B
 #define ADDR_ALARM_SENSOR4               0x3C
-#define ADDR_________X                   0x3D // 0x3D-0x3E
+#define ADDR__________X                  0x3D // 0x3D-0x3E
 #define ADDR_CALIB_POWER_V               0x3F
 #define ADDR_FAN_ON_OFF                  0x40
 #define ADDR_SENSOR_INTRV                0x41 // 0x41-0x42
@@ -225,15 +229,21 @@ struct settingsInitTypeDef{
   uint16_t maxX;
   uint16_t maxY;
   //RF24L01
-  uint8_t  rf24SpeedPower;
+  uint16_t rf24Addr;
+  uint8_t  rf24Prim;
+  uint8_t  rf24Secon;
+  uint8_t  rf24Speed;
+  uint8_t  rf24Power;
   uint8_t  rf24Ch;
-  uint32_t rf24Tx;
-  uint32_t rf24Rx0;
-  uint32_t rf24Rx1;
-  uint8_t  rf24Rx2;
-  uint8_t  rf24Rx3;
-  uint8_t  rf24Rx4;
-  uint8_t  rf24Rx5;
+  uint8_t  rf24TypeOn;
+  uint8_t  rf24TypeSend1;
+  uint8_t  rf24TypeAddr1;
+  uint8_t  rf24TypeSend2;
+  uint8_t  rf24TypeAddr2;
+  uint8_t  rf24TypeSend3;
+  uint8_t  rf24TypeAddr3;
+  uint8_t  rf24TypeSend4;
+  uint8_t  rf24TypeAddr4;
   //ADC
   uint8_t  sensorOnOff;
   int8_t   calibSensor1;
@@ -280,10 +290,14 @@ extern struct settingsInitTypeDef settings;
 
 uint32_t GetTick(void);
 void DelayMs(uint32_t ms);
+void DelayMc(uint32_t mc);
+
+void WriteData32ToBuffer(uint8_t addr, uint32_t data, uint8_t* buff);
+void WriteData16ToBuffer(uint8_t addr, uint16_t data, uint8_t* buff);
+uint32_t ReadData32Buffer(uint8_t addr, uint8_t* buff);
+uint16_t ReadData16Buffer(uint8_t addr, uint8_t* buff);
 
 void ReadConfig(void);
-void CounterToBuffer(uint32_t counter, uint8_t* buff);
-uint32_t BufferToCounter(uint8_t* buff);
 void Setting(void);
 
 #endif /* _SETTING_H */

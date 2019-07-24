@@ -11,29 +11,33 @@ void DelayMs(uint32_t ms){ uint32_t tickstart = GetTick();
   while((GetTick() - tickstart) < ms){}
 }
 
+void DelayMc(uint32_t mc){ mc *= (SystemCoreClock / 1000000) / 9;
+  while (mc--);
+}
+
 void WriteData32ToBuffer(uint8_t addr, uint32_t data, uint8_t* buff){
-  buff[addr] = (data >> 0x18);
-  buff[addr + 0x01] = (data >> 0x10);
-  buff[addr + 0x02] = (data >> 0x08);
-  buff[addr + 0x03] = data; 
+  buff[addr + 0x03] = (data >> 0x18);
+  buff[addr + 0x02] = (data >> 0x10);
+  buff[addr + 0x01] = (data >> 0x08);
+  buff[addr] = data; 
 }
 
 void WriteData16ToBuffer(uint8_t addr, uint16_t data, uint8_t* buff){
-  buff[addr] = (data >> 0x08);
-  buff[addr + 0x01] = data;
+  buff[addr + 0x01] = (data >> 0x08);
+  buff[addr] = data;
 }
 
 uint32_t ReadData32Buffer(uint8_t addr, uint8_t* buff){
-  uint32_t data = buff[addr] << 0x18;
-  data |= buff[addr + 0x01] << 0x10;
-  data |= buff[addr + 0x02] << 0x08;
-  data |= buff[addr + 0x03]; 
+  uint32_t data = buff[addr + 0x03] << 0x18;
+  data |= buff[addr + 0x02] << 0x10;
+  data |= buff[addr + 0x01] << 0x08;
+  data |= buff[addr]; 
   return data;
 }
 
 uint16_t ReadData16Buffer(uint8_t addr, uint8_t* buff){
-  uint16_t data = buff[addr] << 0x08;
-  data |= buff[addr + 0x01];
+  uint16_t data = buff[addr + 0x01] << 0x08;
+  data |= buff[addr];
   return data;
 }
 
@@ -53,8 +57,8 @@ void ReadConfig(void){
     dateBuild.sec   = BUILD_TIME_S;
     WriteData32ToBuffer(ADDR_DATE_BUILD, RtcTimeToSeconds(&dateBuild), buffEeprom);
     buffEeprom[ADDR_STATUS] = STATUS;
-    buffEeprom[ADDR_DEVICE_NUMBER] = DEVICE_NUMBER;
     buffEeprom[ADDR_DEVICE_TYPE] = DEVICE_TYPE;
+    buffEeprom[ADDR_DEVICE_NUMBER] = DEVICE_NUMBER;
     buffEeprom[ADDR_RTC_CALIBRATION] = RTC_CALIBRATION;
     WriteData32ToBuffer(ADDR_CAN_SPEED, CAN_SPEED, buffEeprom);
     WriteData16ToBuffer(ADDR_RS485_SPEED, RS485_SPEED, buffEeprom);
@@ -62,15 +66,22 @@ void ReadConfig(void){
     buffEeprom[ADDR_LCD_ROTATION] = LCD_ROTATION;
     buffEeprom[ADDR_TIME_ZONE] = TIME_ZONE;
     //RF24L01
-    buffEeprom[ADDR_RF24_SP_PW] = RF24_SP_PW;
+    WriteData16ToBuffer(ADDR_RF24_ADDR, RF24_ADDR, buffEeprom);
+    buffEeprom[ADDR_RF24_PRIM] = RF24_PRIM;
+    buffEeprom[ADDR_RF24_SECON] = RF24_SECON;
+    buffEeprom[ADDR_RF24_SPEED] = RF24_SPEED;
+    buffEeprom[ADDR_RF24_POWER] = RF24_POWER;
     buffEeprom[ADDR_RF24_CH] = RF24_CH;
-    WriteData32ToBuffer(ADDR_RF24_TX_ADR, RF24_TX_ADR, buffEeprom);
-    WriteData32ToBuffer(ADDR_RF24_RX0_ADR, RF24_RX0_ADR, buffEeprom);
-    WriteData32ToBuffer(ADDR_RF24_RX1_ADR, RF24_RX1_ADR, buffEeprom);
-    buffEeprom[ADDR_RF24_RX2_ADR] = RF24_RX2_ADR;
-    buffEeprom[ADDR_RF24_RX3_ADR] = RF24_RX3_ADR;
-    buffEeprom[ADDR_RF24_RX4_ADR] = RF24_RX4_ADR;
-    buffEeprom[ADDR_RF24_RX5_ADR] = RF24_RX5_ADR;
+    buffEeprom[ADDR_RF24_TYPE_ON] = 0x00;
+    buffEeprom[ADDR_RF24_TYPE_SEND_1] = 0x00;
+    buffEeprom[ADDR_RF24_TYPE_ADDR_1] = 0x00;
+    buffEeprom[ADDR_RF24_TYPE_SEND_2] = 0x00;
+    buffEeprom[ADDR_RF24_TYPE_ADDR_2] = 0x00;
+    buffEeprom[ADDR_RF24_TYPE_SEND_3] = 0x00;
+    buffEeprom[ADDR_RF24_TYPE_ADDR_3] = 0x00;
+    buffEeprom[ADDR_RF24_TYPE_SEND_4] = 0x00;
+    buffEeprom[ADDR_RF24_TYPE_ADDR_4] = 0x00;
+    
 /*----------------------------------------------------------------------------*/
     //ADC
     buffEeprom[ADDR_SENSOR_ON_OFF] = SENSOR_ON_OFF;
@@ -128,8 +139,8 @@ void ReadConfig(void){
     #endif
   }
   settings.dateBuild = ReadData32Buffer(ADDR_DATE_BUILD, buffEeprom);
-  settings.number = buffEeprom[ADDR_DEVICE_NUMBER];
   settings.type = buffEeprom[ADDR_DEVICE_TYPE];
+  settings.number = buffEeprom[ADDR_DEVICE_NUMBER];
   settings.rtcCalib = buffEeprom[ADDR_RTC_CALIBRATION];
   
   settings.rotation = buffEeprom[ADDR_LCD_ROTATION];
@@ -148,15 +159,21 @@ void ReadConfig(void){
   settings.rs485Speed = ReadData16Buffer(ADDR_RS485_SPEED, buffEeprom);
   settings.canDevice = (settings.type << 0x08) | (settings.number << 0x04);
   //RF24L01
-  settings.rf24SpeedPower = buffEeprom[ADDR_RF24_SP_PW];
+  settings.rf24Addr = ReadData16Buffer(ADDR_RF24_ADDR, buffEeprom);
+  settings.rf24Prim = buffEeprom[ADDR_RF24_PRIM];
+  settings.rf24Secon = buffEeprom[ADDR_RF24_SECON];
+  settings.rf24Speed = buffEeprom[ADDR_RF24_SPEED];
+  settings.rf24Power = buffEeprom[ADDR_RF24_POWER];
   settings.rf24Ch = buffEeprom[ADDR_RF24_CH];
-  settings.rf24Tx = ReadData32Buffer(ADDR_RF24_TX_ADR, buffEeprom);
-  settings.rf24Rx0 = ReadData32Buffer(ADDR_RF24_RX0_ADR, buffEeprom);
-  settings.rf24Rx1 = ReadData32Buffer(ADDR_RF24_RX1_ADR, buffEeprom);
-  settings.rf24Rx2 = buffEeprom[ADDR_RF24_RX2_ADR];
-  settings.rf24Rx3 = buffEeprom[ADDR_RF24_RX3_ADR];
-  settings.rf24Rx4 = buffEeprom[ADDR_RF24_RX4_ADR];
-  settings.rf24Rx5 = buffEeprom[ADDR_RF24_RX5_ADR];
+  settings.rf24TypeOn = buffEeprom[ADDR_RF24_TYPE_ON];
+  settings.rf24TypeSend1 = buffEeprom[ADDR_RF24_TYPE_SEND_1];
+  settings.rf24TypeAddr1 = buffEeprom[ADDR_RF24_TYPE_ADDR_1];
+  settings.rf24TypeSend2 = buffEeprom[ADDR_RF24_TYPE_SEND_2];
+  settings.rf24TypeAddr2 = buffEeprom[ADDR_RF24_TYPE_ADDR_2];
+  settings.rf24TypeSend3 = buffEeprom[ADDR_RF24_TYPE_SEND_3];
+  settings.rf24TypeAddr3 = buffEeprom[ADDR_RF24_TYPE_ADDR_3];
+  settings.rf24TypeSend4 = buffEeprom[ADDR_RF24_TYPE_SEND_4];
+  settings.rf24TypeAddr4 = buffEeprom[ADDR_RF24_TYPE_ADDR_4];
 /*----------------------------------------------------------------------------*/
   //ADC
   settings.sensorOnOff = buffEeprom[ADDR_SENSOR_ON_OFF];
@@ -225,6 +242,16 @@ void TIM6_IRQHandler(void){
   ADCAlarm();
   InUpdate10Hz();
   TIM6->SR &= ~TIM_SR_UIF;
+}
+
+void EXTI15_10_IRQHandler(void){
+  if((EXTI->PR & EXTI_PR_PR13) == EXTI_PR_PR13){ // Прерывание от EXTI13 //PD13
+    Nrf24CheckRadio();
+    EXTI->PR |= EXTI_PR_PR13; // Сбросить флаг EXTI13
+  }
+  
+  
+  
 }
 
 void Timer10Hz(void){  
