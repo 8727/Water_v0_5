@@ -211,6 +211,7 @@
 #define PRIORITY_CAN_RX0                 0x00
 #define PRIORITY_CAN_RX1                 0x00
 #define PRIORITY_CAN_ERROR               0x00
+#define PRIORITY_RF24                    0x00
 
 /* Define --------------------------------------------------------------------*/
 struct settingsInitTypeDef{
