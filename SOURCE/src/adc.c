@@ -113,7 +113,7 @@ void ADC1_2_IRQHandler(void){
     }
     adc.ch++;
     if(0x09 < adc.ch) adc.ch = 0x00;
-    ADC1->CR2 |= ADC_CR2_JSWSTART;
+//    ADC1->CR2 |= ADC_CR2_JSWSTART;
   }
 }
 

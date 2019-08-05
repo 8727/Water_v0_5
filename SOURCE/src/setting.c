@@ -241,6 +241,7 @@ void TIM6_IRQHandler(void){
   FanAnalyze();
   ADCAlarm();
   InUpdate10Hz();
+  ADC1->CR2 |= ADC_CR2_JSWSTART;
   TIM6->SR &= ~TIM_SR_UIF;
 }
 
