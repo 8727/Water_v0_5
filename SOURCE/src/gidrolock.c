@@ -1,6 +1,5 @@
 #include "gidrolock.h"
 
-
 void BlockWater(void){
   COLD_CLOSED;
   HOT_CLOSED;
