@@ -7,7 +7,7 @@
 
 #include "setting.h"
 /* Define --------------------------------------------------------------------*/
-#define INFO
+//#define INFO
 #define DEBUG_SETTING
 #define DEBUG_EE24CXX
 #define DEBUG_IN

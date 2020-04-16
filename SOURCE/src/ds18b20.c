@@ -127,12 +127,12 @@ void Ds18b20Read(void){
     Ds18b20SendByte(DS18B20_READ_SCRATCHPAD);
     temp = (Ds18b20ReadByte() << 0x08) | Ds18b20ReadByte();
     ds18b20[i].temperature = ((temp & 0x0FFF) >> 0x04);
-    ds18b20[i].fraction = ((temp & 0x000F) * 0.625);
+    ds18b20[i].fraction = ((temp & 0x000F) * 6.25);
     #if (defined DEBUG_DS18B20 || defined INFO)
-      printf("Sensor < %d > ID : %02X %02X %02X %02X %02X %02X %02X %02X Temper: %d.%02d\r\n",
+      printf("Sensor < %d > ID : %02X %02X %02X %02X %02X %02X %02X %02X Temper: %d.%02d 0x%04X\r\n",
       i ,ds18b20[i].deviceID[0x00], ds18b20[i].deviceID[0x01], ds18b20[i].deviceID[0x02], ds18b20[i].deviceID[0x03],
       ds18b20[i].deviceID[0x04], ds18b20[i].deviceID[0x05], ds18b20[i].deviceID[0x06], ds18b20[i].deviceID[0x07],
-      ds18b20[i].temperature, ds18b20[i].fraction);
+      ds18b20[i].temperature, ds18b20[i].fraction, temp);
     #endif
   }
   Ds18b20Reset();
