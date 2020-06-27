@@ -11,10 +11,6 @@ void DelayMs(uint32_t ms){ uint32_t tickstart = GetTick();
   while((GetTick() - tickstart) < ms){}
 }
 
-void DelayMc(uint32_t mc){ mc *= (SystemCoreClock / 1000000) / 9;
-  while (mc--);
-}
-
 void WriteData32ToBuffer(uint8_t addr, uint32_t data, uint8_t* buff){
   buff[addr + 0x03] = (data >> 0x18);
   buff[addr + 0x02] = (data >> 0x10);
@@ -236,13 +232,16 @@ void ReadConfig(void){
   dht22.temperature = 0xFFFF;
 }
 
-void TIM6_IRQHandler(void){
-  HeatingPWM();
-  FanAnalyze();
-  ADCAlarm();
-  InUpdate10Hz();
-  ADC1->CR2 |= ADC_CR2_JSWSTART;
-  TIM6->SR &= ~TIM_SR_UIF;
+void osTimer10Hz(void *pvParameters){
+  while(true){
+    HeatingPWM();
+    FanAnalyze();
+    ADCAlarm();
+    InUpdate10Hz();
+    ADC1->CR2 |= ADC_CR2_JSWSTART;
+    vTaskDelay(100);
+  }
+//  vTaskDelete (NULL);
 }
 
 void EXTI15_10_IRQHandler(void){
@@ -255,21 +254,6 @@ void EXTI15_10_IRQHandler(void){
   
 }
 
-void Timer10Hz(void){  
-  RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;
-  TIM6->PSC = 0x1F3F; // 7999 80000000:8000=10000Hz
-  TIM6->ARR = 0x03E7; // 10Hz
-  TIM6->SR = 0x00;
-  TIM6->DIER |= TIM_DIER_UIE;
-  TIM6->CR1 = TIM_CR1_CEN | TIM_CR1_ARPE;
-  
-  #if defined DEBUG_SETTING
-    printf("< OK >    Start Timer 10Hz\r\n\n");
-  #endif
-  
-  NVIC_SetPriority(TIM6_IRQn, PRIORITY_HEATING);
-  NVIC_EnableIRQ(TIM6_IRQn);
-}
 
 void Setting(void){
   #if defined DEBUG_SETTING
@@ -300,8 +284,8 @@ void Setting(void){
   FanInit();
   RtcInit();
   W25QxxInit();
-  LcdInit();
-  GuiInit();
+//LcdInit();
+//GuiInit();
   ADCInit();
   Ds18b20Init();
   Dht22Init();
@@ -309,7 +293,6 @@ void Setting(void){
   Rs485Init();
   Nrf24Init();
   BeepInit();
-  Timer10Hz();
   #if defined DEBUG_SETTING
     printf("\t\tStop setting\n\r\n");
   #endif

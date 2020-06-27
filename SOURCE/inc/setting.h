@@ -85,10 +85,6 @@
 #define WATER_CALIB_OUT_COLD             0x0000
 #define WATER_LITERS                     0x0A
 
-
-//#define HEATING_MAX_DEVICES              0x05
-//#define DS18B20_MAX_DEVICES              0x08
-
 #define EEPROM_BUFF                      0x80
 
 /* Define --------------------------------------------------------------------*/
@@ -291,7 +287,6 @@ extern struct settingsInitTypeDef settings;
 
 uint32_t GetTick(void);
 void DelayMs(uint32_t ms);
-void DelayMc(uint32_t mc);
 
 void WriteData32ToBuffer(uint8_t addr, uint32_t data, uint8_t* buff);
 void WriteData16ToBuffer(uint8_t addr, uint16_t data, uint8_t* buff);
@@ -300,5 +295,7 @@ uint16_t ReadData16Buffer(uint8_t addr, uint8_t* buff);
 
 void ReadConfig(void);
 void Setting(void);
+
+void osTimer10Hz(void *pvParameters);
 
 #endif /* _SETTING_H */

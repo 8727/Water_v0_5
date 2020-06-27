@@ -3,11 +3,14 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
 #include "stdio.h"
 
 #include "setting.h"
 /* Define --------------------------------------------------------------------*/
-//#define INFO
+#define INFO
 #define DEBUG_SETTING
 #define DEBUG_EE24CXX
 #define DEBUG_IN
